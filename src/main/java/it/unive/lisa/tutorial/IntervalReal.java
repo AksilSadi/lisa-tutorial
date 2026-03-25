@@ -220,13 +220,29 @@ public class IntervalReal
 	}
 
 	public IntervalReal mul(IntervalReal other) {
-		// TODO Implement
-		return other;
+
+		MathNumber ll = low.multiply(other.low);
+		MathNumber lh = low.multiply(other.high);
+		MathNumber hl = high.multiply(other.low);
+		MathNumber hh = high.multiply(other.high);
+
+		MathNumber lb = ll.min(lh).min(hl).min(hh);
+		MathNumber ub = ll.max(lh).max(hl).max(hh);
+
+		return new IntervalReal(lb, ub);
 	}
 
 	public IntervalReal div(IntervalReal other) {
-		// TODO Implement
-		return other;
+		// If divisor contains 0, we cannot give a sound result
+		if (other.low.leq(MathNumber.ZERO) && other.high.geq(MathNumber.ZERO))
+			return bottom();
+
+		if (this.isTop())
+			return top();
+
+		IntervalReal divFactorInt = new IntervalReal(MathNumber.ONE.divide(other.high),
+				MathNumber.ONE.divide(other.low));
+		return this.mul(divFactorInt);
 
 	}
 
@@ -290,18 +306,6 @@ public class IntervalReal
 		return eq(other).or(lt(other));
 	}
 
-	public Satisfiability ge(IntervalReal other) {
-		// TODO IMplementer
-		return Satisfiability.UNKNOWN;
-	}
-
-	public Satisfiability gt(IntervalReal other) {
-		// TODO Implementer
-		return Satisfiability.UNKNOWN;
-	}
-
-
-
 	@Override
 	public Satisfiability satisfiesBinaryExpression(
 			BinaryOperator operator,
@@ -319,13 +323,13 @@ public class IntervalReal
 			return left.lt(right);
 
 		if (operator.equals(ComparisonGt.INSTANCE))
-			return left.gt(right);
+			return left.le(right).negate();
 
 		if (operator.equals(ComparisonLe.INSTANCE))
 			return left.le(right);
 
 		if (operator.equals(ComparisonGe.INSTANCE))
-			return left.ge(right);
+			return left.lt(right).negate();
 
 		if (operator.equals(ComparisonNe.INSTANCE))
 			return left.neq(right);

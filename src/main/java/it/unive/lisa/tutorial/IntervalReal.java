@@ -185,13 +185,13 @@ public class IntervalReal
 		return top();
 	}
 
-	public IntervalReal intervalNegation(IntervalReal arg) {
-		if (arg.isTop())
+	public IntervalReal intervalNegation() {
+		if (isTop())
 			return top();
-		return new IntervalReal(arg.high.multiply(MINUS_ONE), arg.low.multiply(MINUS_ONE));
+		return new IntervalReal(high.multiply(MINUS_ONE), low.multiply(MINUS_ONE));
 	}
 
-	public IntervalReal intervalStringLength(IntervalReal arg) {
+	public IntervalReal intervalStringLength() {
 		return new IntervalReal(MathNumber.ZERO, MathNumber.PLUS_INFINITY);
 	}
 
@@ -203,10 +203,10 @@ public class IntervalReal
 			SemanticOracle oracle) {
 
 		if (operator.equals(NumericNegation.INSTANCE))
-			return intervalNegation(arg);
+			return arg.intervalNegation();
 
 		if (operator.equals(StringLength.INSTANCE))
-			return intervalStringLength(arg);
+			return arg.intervalStringLength();
 
 		return top();
 	}
@@ -232,6 +232,10 @@ public class IntervalReal
 		return new IntervalReal(lb, ub);
 	}
 
+	public IntervalReal inv() {
+		return new IntervalReal(MathNumber.ONE.divide(high), MathNumber.ONE.divide(low));
+	}
+
 	public IntervalReal div(IntervalReal other) {
 		// If divisor contains 0, we cannot give a sound result
 		if (other.low.leq(MathNumber.ZERO) && other.high.geq(MathNumber.ZERO))
@@ -240,9 +244,7 @@ public class IntervalReal
 		if (this.isTop())
 			return top();
 
-		IntervalReal divFactorInt = new IntervalReal(MathNumber.ONE.divide(other.high),
-				MathNumber.ONE.divide(other.low));
-		return this.mul(divFactorInt);
+		return this.mul(other.inv());
 
 	}
 

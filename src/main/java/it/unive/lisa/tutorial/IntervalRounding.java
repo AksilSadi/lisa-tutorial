@@ -166,17 +166,27 @@ public class IntervalRounding
 			Constant constant,
 			ProgramPoint pp,
 			SemanticOracle oracle) {
-		// TODO On fait ca comment
+		if (constant.getValue() instanceof Integer) {
+			Integer i = (Integer) constant.getValue();
+			return new IntervalRounding(new MathNumber(i), new MathNumber(i), getRepError(i));
+		} else if (constant.getValue() instanceof Float) {
+			Float f = (Float) constant.getValue();
+			return new IntervalRounding(new MathNumber(f), new MathNumber(f), getRepError(f));
+		} else if (constant.getValue() instanceof Double) {
+			Double d = (Double) constant.getValue();
+			return new IntervalRounding(new MathNumber(d), new MathNumber(d), getRepError(d));
+		}
+
 		return top();
 	}
 
-	public IntervalRounding intervalNegation(IntervalRounding arg) {
-		IntervalReal interval = this.interval.intervalNegation(arg.interval);
-		IntervalReal absErr = this.absErr.intervalNegation(arg.absErr);
+	public IntervalRounding intervalNegation() {
+		IntervalReal interval = this.interval.intervalNegation();
+		IntervalReal absErr = this.absErr.intervalNegation();
 		return new IntervalRounding(interval, absErr);
 	}
 
-	public IntervalRounding intervalStringLength(IntervalRounding arg) {
+	public IntervalRounding intervalStringLength() {
 		return new IntervalRounding(MathNumber.ZERO, MathNumber.PLUS_INFINITY, MathNumber.ZERO);
 	}
 
@@ -188,10 +198,10 @@ public class IntervalRounding
 			SemanticOracle oracle) {
 
 		if (operator == NumericNegation.INSTANCE)
-			return intervalNegation(arg);
+			return arg.intervalNegation();
 
 		if (operator == StringLength.INSTANCE)
-			return intervalStringLength(arg);
+			return arg.intervalStringLength();
 
 		return top();
 	}
@@ -209,15 +219,38 @@ public class IntervalRounding
 	}
 
 	public IntervalRounding mul(IntervalRounding other) {
+		/**
+		 * (a+e)*(b+f) 
+		 * = a*b + (a*f + e*b + e*f)
+		 */
+		IntervalReal valuesInterval = this.interval.mul(other.interval);
 
-		// TODO Faire
-		return top();
+		IntervalReal leftErrorInterval = this.absErr.mul(other.interval);
+		IntervalReal rightErrorInterval = this.interval.mul(other.absErr);
+		IntervalReal mulErrorInterval = this.absErr.mul(other.absErr);
+
+		IntervalReal combinedErrorInterval = leftErrorInterval.add(rightErrorInterval).add(mulErrorInterval);
+
+		return new IntervalRounding(valuesInterval, combinedErrorInterval);
 	}
 
 	public IntervalRounding div(IntervalRounding other) {
+		/**
+		 * 1 / (b + f) 
+		 * = (1 / b)*(1 - (f / (b+f)))
+		 * = (1 / b) + (-(f/b)/(f+b))	
+		 * 
+		 * (a + e) / (b + f)
+		 * = (a + e) * (1 / (b + f))		
+		 */
 
-		// TODO Faire
-		return top();
+		IntervalReal int_fpb = other.toValueInterval();
+		IntervalReal int_fbb = other.absErr.div(other.interval).intervalNegation();
+		IntervalReal err_inv = int_fbb.div(int_fpb);
+
+		IntervalRounding denomIntervalRounding = new IntervalRounding(other.interval.inv(), err_inv);
+
+		return this.mul(denomIntervalRounding);
 	}
 
 	@Override

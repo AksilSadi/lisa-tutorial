@@ -19,6 +19,7 @@ import it.unive.lisa.symbolic.value.operator.unary.NumericNegation;
 import it.unive.lisa.symbolic.value.operator.unary.StringLength;
 import it.unive.lisa.symbolic.value.operator.unary.UnaryOperator;
 import it.unive.lisa.util.numeric.MathNumber;
+import it.unive.lisa.util.numeric.MathNumberConversionException;
 import it.unive.lisa.util.representation.StringRepresentation;
 import it.unive.lisa.util.representation.StructuredRepresentation;
 
@@ -85,6 +86,47 @@ public class IntervalReal
 		return new MathNumber(0.0);
 	}
 
+	private MathNumber roundLower(
+			MathNumber value) {
+		if (!value.isFinite())
+			return value;
+
+		try {
+			return new MathNumber(Math.nextDown(value.toDouble()));
+		} catch (MathNumberConversionException e) {
+			return value;
+		}
+	}
+
+	private MathNumber roundUpper(
+			MathNumber value) {
+		if (!value.isFinite())
+			return value;
+
+		try {
+			return new MathNumber(Math.nextUp(value.toDouble()));
+		} catch (MathNumberConversionException e) {
+			return value;
+		}
+	}
+
+	private IntervalReal roundedInterval(
+			MathNumber low,
+			MathNumber high) {
+		if (low.isNaN() || high.isNaN())
+			return top();
+
+		MathNumber roundedLow = roundLower(low);
+		MathNumber roundedHigh = roundUpper(high);
+		if (roundedLow.compareTo(roundedHigh) > 0)
+			return bottom();
+		return new IntervalReal(roundedLow, roundedHigh);
+	}
+
+	private boolean containsZero() {
+		return low.leq(MathNumber.ZERO) && high.geq(MathNumber.ZERO);
+	}
+
 	@Override
 	public IntervalReal top() {
 		// the top element of the lattice
@@ -105,7 +147,7 @@ public class IntervalReal
 	public boolean lessOrEqualAux(
 			IntervalReal other)
 			throws SemanticException {
-		return other.low.lt(low) && other.high.gt(high);
+		return other.low.leq(low) && other.high.geq(high);
 	}
 
 	@Override
@@ -186,9 +228,9 @@ public class IntervalReal
 	}
 
 	public IntervalReal intervalNegation(IntervalReal arg) {
-		if (isTop())
+		if (arg.isTop())
 			return top();
-		return new IntervalReal(arg.high.multiply(MINUS_ONE), arg.low.multiply(MINUS_ONE));
+		return roundedInterval(arg.high.multiply(MINUS_ONE), arg.low.multiply(MINUS_ONE));
 	}
 
 	public IntervalReal intervalStringLength(IntervalReal arg) {
@@ -212,11 +254,11 @@ public class IntervalReal
 	}
 
 	public IntervalReal add(IntervalReal other) {
-		return new IntervalReal(low.add(other.low), high.add(other.high));
+		return roundedInterval(low.add(other.low), high.add(other.high));
 	}
 
 	public IntervalReal sub(IntervalReal other) {
-		return new IntervalReal(low.subtract(other.high), high.subtract(other.low));
+		return roundedInterval(low.subtract(other.high), high.subtract(other.low));
 	}
 
 	public IntervalReal mul(IntervalReal other) {
@@ -229,13 +271,17 @@ public class IntervalReal
 		MathNumber lb = ll.min(lh).min(hl).min(hh);
 		MathNumber ub = ll.max(lh).max(hl).max(hh);
 
-		return new IntervalReal(lb, ub);
+		return roundedInterval(lb, ub);
 	}
 
 	public IntervalReal div(IntervalReal other) {
-		// If divisor contains 0, we cannot give a sound result
-		if (other.low.leq(MathNumber.ZERO) && other.high.geq(MathNumber.ZERO))
+		if (other.equals(ZERO))
 			return bottom();
+
+		// If divisor might be 0, a precise interval can become disjoint. We
+		// conservatively over-approximate it with top.
+		if (other.containsZero())
+			return top();
 
 		if (this.isTop())
 			return top();
@@ -253,6 +299,9 @@ public class IntervalReal
 			IntervalReal right,
 			ProgramPoint pp,
 			SemanticOracle oracle) {
+		if (left.isBottom() || right.isBottom())
+			return bottom();
+
 		if (!(operator instanceof DivisionOperator) && (left.isTop() || right.isTop()))
 			return top();
 
@@ -291,19 +340,19 @@ public class IntervalReal
 	}
 
 	public Satisfiability lt(IntervalReal other) {
-		try {
-			IntervalReal glb = this.glb(other);
-			if (glb.isBottom())
-				return Satisfiability.fromBoolean(this.high.compareTo(other.low) < 0);
-		} catch (SemanticException e) {
-			return Satisfiability.UNKNOWN;
-		}
-
+		if (high.lt(other.low))
+			return Satisfiability.SATISFIED;
+		if (low.geq(other.high))
+			return Satisfiability.NOT_SATISFIED;
 		return Satisfiability.UNKNOWN;
 	}
 
 	public Satisfiability le(IntervalReal other) {
-		return eq(other).or(lt(other));
+		if (high.leq(other.low))
+			return Satisfiability.SATISFIED;
+		if (low.gt(other.high))
+			return Satisfiability.NOT_SATISFIED;
+		return Satisfiability.UNKNOWN;
 	}
 
 	@Override
@@ -376,7 +425,7 @@ public class IntervalReal
 		IntervalReal update = null;
 
 		if (operator == ComparisonEq.INSTANCE) {
-			update = eval;			
+			update = starting.glb(eval);
 		} else if (operator.equals(ComparisonGe.INSTANCE)) {
 			if (rightIsExpr)
 				update = lowIsMinusInfinity ? null : starting.glb(low_inf);
@@ -386,7 +435,7 @@ public class IntervalReal
 			if (rightIsExpr)
 				update = lowIsMinusInfinity ? null : starting.glb(lowp1_inf);
 			else
-				update = lowIsMinusInfinity ? eval : starting.glb(inf_highm1);
+				update = starting.glb(inf_highm1);
 		} else if (operator.equals(ComparisonLe.INSTANCE)) {
 			if (rightIsExpr)
 				update = starting.glb(inf_high);
@@ -394,7 +443,7 @@ public class IntervalReal
 				update = lowIsMinusInfinity ? null : starting.glb(low_inf);
 		} else if (operator.equals(ComparisonLt.INSTANCE)) {
 			if (rightIsExpr)
-				update = lowIsMinusInfinity ? eval : starting.glb(inf_highm1);
+				update = starting.glb(inf_highm1);
 			else
 				update = lowIsMinusInfinity ? null : starting.glb(lowp1_inf);
 		}

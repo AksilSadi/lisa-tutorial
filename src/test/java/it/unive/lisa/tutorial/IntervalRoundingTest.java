@@ -1,7 +1,5 @@
 package it.unive.lisa.tutorial;
 
-public package it.unive.lisa.tutorial;
-
 import it.unive.lisa.AnalysisException;
 import it.unive.lisa.DefaultConfiguration;
 import it.unive.lisa.LiSA;
@@ -41,6 +39,4 @@ public class IntervalRoundingTest {
 		// finally, we tell LiSA to analyze the program
 		lisa.run(program);
 	}
-} {
-	
-}
+} 

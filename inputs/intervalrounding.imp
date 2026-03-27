@@ -1,0 +1,77 @@
+class intervalrounding {
+
+	smallErrorAddition() {
+		def a = 1.0;
+		def b = 1.0000001;
+		def result = a + b;
+		return result;
+	}
+
+	bigErrorAddition() {
+		def a = 1000000000.0;
+		def b = 0.0000001;
+		def result = a + b;
+		return result;
+	}
+
+	smallErrorSubtraction() {
+		def a = 1.0000001;
+		def b = 1.0;
+		def result = a - b;
+		return result;
+	}
+
+	bigErrorSubtraction() {
+		def a = 1000000000.0;
+		def b = 999999999.9999999;
+		def result = a - b;
+		return result;
+	}
+
+	smallErrorMultiplication() {
+		def a = 1.0;
+		def b = 1.0000001;
+		def result = a * b;
+		return result;
+	}
+
+	bigErrorMultiplication() {
+		def a = 1000000.0;
+		def b = 0.000001;
+		def result = a * b;
+		return result;
+	}
+
+	smallErrorDivision() {
+		def a = 1.0;
+		def b = 1.0000001;
+		def result = a / b;
+		return result;
+	}
+
+	bigErrorDivision() {
+		def a = 1.0;
+		def b = 1000000.0;
+		def result = a / b;
+		return result;
+	}
+
+	cancellation() {
+		def a = 1.0;
+		def b = 1.0000000001;
+		def c = 1.0000000002;
+		def result = (a + b) - c;
+		return result;
+	}
+
+	accumulatedError() {
+		def sum = 0.0;
+		def i = 0;
+		while (i < 1000000) {
+			sum = sum + 0.000001;
+			i = i + 1;
+		}
+		return sum;
+	}
+
+}

@@ -533,3 +533,260 @@ WARNING: Unmatched cancel notification for request id 43
 2026.03.29 18:17:01 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
 2026.03.29 18:17:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
 2026.03.29 18:17:03 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+2026.03.29 18:24:36 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java
+2026.03.29 18:24:36 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+2026.03.29 18:44:55 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+2026.03.29 18:44:55 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java
+2026.03.29 18:44:55 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+mars 29, 2026 6:44:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11
+2026.03.29 18:44:56 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 18:44:56 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 18:44:56 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+mars 29, 2026 6:44:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14
+2026.03.29 18:44:56 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 18:44:58 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 18:45:16 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:48:19 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:48:19 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java
+2026.03.29 19:48:19 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:48:19 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+mars 29, 2026 7:48:19 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 67
+2026.03.29 19:48:19 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:48:19 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:49:04 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:49:04 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:49:04 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:49:06 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:50:12 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:50:15 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalReal.java. Using fallback presentation compiler.
+2026.03.29 19:50:15 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:50:15 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 19:50:15 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:50:15 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 7:50:15 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 81
+2026.03.29 19:50:17 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 7:50:50 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 206
+mars 29, 2026 7:50:50 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 207
+2026.03.29 19:52:30 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:52:31 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 7:52:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 262
+mars 29, 2026 7:52:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 263
+mars 29, 2026 7:52:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 264
+2026.03.29 19:52:54 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:54:29 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:54:29 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:54:29 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 7:54:47 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 714
+2026.03.29 19:54:50 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 7:55:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1035
+mars 29, 2026 7:55:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1036
+mars 29, 2026 7:58:25 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1218
+2026.03.29 19:59:35 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:59:35 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:59:36 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:59:36 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:59:36 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 19:59:36 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:00:27 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:00:27 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:03:38 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:03:38 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:03:57 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:04:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1413
+mars 29, 2026 8:04:13 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1558
+mars 29, 2026 8:04:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1719
+mars 29, 2026 8:04:40 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1754
+mars 29, 2026 8:12:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1993
+mars 29, 2026 8:13:17 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2062
+mars 29, 2026 8:13:17 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2063
+2026.03.29 20:14:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:14:06 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2334
+2026.03.29 20:29:11 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:11 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:11 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:12 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:12 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:12 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:14 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:14 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:15 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:15 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:17 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:17 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:18 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:18 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:29:18 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:29:22 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java
+2026.03.29 20:29:22 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:29:22 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:29:22 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:29:22 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:29:23 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:29:26 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:29:26 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:29:29 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+mars 29, 2026 8:29:50 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2798
+mars 29, 2026 8:29:50 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2799
+2026.03.29 20:30:40 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:30:42 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:42 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:30:42 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:30:49 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3023
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:30:50 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:30:49 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:01 WARN  Running javac-semanticdb failed for file:///C:/Users/DELL/OneDrive/Bureau/sorbonne/M2/S2/TAS/lisa-tutorial/src/main/java/it/unive/lisa/tutorial/TwoVariableLinearInequality.java. Output:
+
+2026.03.29 20:31:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:01 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:31:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:03 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:31:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3048
+2026.03.29 20:31:03 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:04 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:04 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:04 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:04 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:05 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:06 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:31:06 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:31:06 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:31:19 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3105
+mars 29, 2026 8:31:24 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3153
+mars 29, 2026 8:31:48 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3259
+mars 29, 2026 8:31:48 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3260
+mars 29, 2026 8:33:47 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3347
+mars 29, 2026 8:33:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3398
+mars 29, 2026 8:33:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3399
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:34:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3427
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:34:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3434
+2026.03.29 20:34:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:34:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3436
+2026.03.29 20:34:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+mars 29, 2026 8:34:01 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3451
+2026.03.29 20:34:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:02 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:34:02 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:34:02 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:36:37 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:36:37 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:37:39 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\Interval.java. Using fallback presentation compiler.
+2026.03.29 20:37:39 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java
+2026.03.29 20:37:39 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:39 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:39 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:40 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:52 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:52 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRoundingTest.java
+2026.03.29 20:37:52 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRoundingTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:53 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRoundingTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:52 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRoundingTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:53 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRoundingTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:56 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRoundingTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:56 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:37:56 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:37:56 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:37:58 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRealTest.java
+2026.03.29 20:37:58 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRealTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:58 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRealTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:58 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRealTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:58 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRealTest.java. Using fallback presentation compiler.
+2026.03.29 20:37:58 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRealTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:00 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRealTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\IntervalRealTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:38:01 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:38:01 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:38:03 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java
+2026.03.29 20:38:03 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:03 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:03 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:03 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:12 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:23 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\test\java\it\unive\lisa\tutorial\TwoVariableLinearInequalityTest.java. Using fallback presentation compiler.
+2026.03.29 20:38:23 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:38:24 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:38:24 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:38:25 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:40:26 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:40:26 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:40:26 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:40:27 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:40:27 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:47:32 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:47:34 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java
+2026.03.29 20:47:34 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+2026.03.29 20:47:34 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+2026.03.29 20:47:34 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+2026.03.29 20:47:34 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+2026.03.29 20:47:36 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+mars 29, 2026 8:47:58 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3708
+mars 29, 2026 8:47:58 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3709
+2026.03.29 20:48:05 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\IntervalRounding.java. Using fallback presentation compiler.
+2026.03.29 20:48:05 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:48:05 WARN  no build target for: C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java
+2026.03.29 20:48:05 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:48:05 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:48:05 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:48:11 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:48:11 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.03.29 20:48:14 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.

@@ -8,11 +8,15 @@ import it.unive.lisa.analysis.lattices.InverseSetLattice;
 import it.unive.lisa.analysis.lattices.Satisfiability;
 import it.unive.lisa.analysis.value.ValueDomain;
 import it.unive.lisa.program.cfg.ProgramPoint;
+import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.ValueExpression;
+import it.unive.lisa.symbolic.value.operator.binary.ComparisonLe;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -79,6 +83,20 @@ public class TwoVariableLinearInequality
 			ProgramPoint dest,
 			SemanticOracle oracle)
 			throws SemanticException {
+		if (expression instanceof BinaryExpression) {
+			BinaryExpression binary = (BinaryExpression) expression;
+			if (binary.getOperator() instanceof ComparisonLe
+					&& binary.getLeft() instanceof Identifier
+					&& binary.getRight() instanceof Identifier) {
+				Identifier left = (Identifier) binary.getLeft();
+				Identifier right = (Identifier) binary.getRight();
+				Constraint constraint = new Constraint(left, right, 1, -1, 0);
+				ConstraintSet singleton = new ConstraintSet(Collections.singleton(constraint));
+				return putState(left, getState(left).glb(singleton))
+						.putState(right, getState(right).glb(singleton));
+			}
+		}
+
 		return this;
 	}
 
@@ -118,6 +136,19 @@ public class TwoVariableLinearInequality
 			ProgramPoint pp,
 			SemanticOracle oracle)
 			throws SemanticException {
+		if (expression instanceof BinaryExpression) {
+			BinaryExpression binary = (BinaryExpression) expression;
+			if (binary.getOperator() instanceof ComparisonLe
+					&& binary.getLeft() instanceof Identifier
+					&& binary.getRight() instanceof Identifier) {
+				Identifier left = (Identifier) binary.getLeft();
+				Identifier right = (Identifier) binary.getRight();
+				Constraint constraint = new Constraint(left, right, 1, -1, 0);
+				if (getState(left).contains(constraint) && getState(right).contains(constraint))
+					return Satisfiability.SATISFIED;
+			}
+		}
+
 		return Satisfiability.UNKNOWN;
 	}
 
@@ -154,6 +185,26 @@ public class TwoVariableLinearInequality
 			this.leftCoeff = leftCoeff;
 			this.rightCoeff = rightCoeff;
 			this.constant = constant;
+		}
+
+		@Override
+		public boolean equals(
+				Object obj) {
+			if (this == obj)
+				return true;
+			if (!(obj instanceof Constraint))
+				return false;
+			Constraint other = (Constraint) obj;
+			return leftCoeff == other.leftCoeff
+					&& rightCoeff == other.rightCoeff
+					&& constant == other.constant
+					&& Objects.equals(left, other.left)
+					&& Objects.equals(right, other.right);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(left, right, leftCoeff, rightCoeff, constant);
 		}
 	}
 

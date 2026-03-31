@@ -1,5 +1,8 @@
 package it.unive.lisa.tutorial;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+
 import it.unive.lisa.analysis.Lattice;
 import it.unive.lisa.analysis.SemanticException;
 import it.unive.lisa.analysis.SemanticOracle;
@@ -19,6 +22,7 @@ import it.unive.lisa.symbolic.value.operator.unary.NumericNegation;
 import it.unive.lisa.symbolic.value.operator.unary.StringLength;
 import it.unive.lisa.symbolic.value.operator.unary.UnaryOperator;
 import it.unive.lisa.util.numeric.MathNumber;
+import it.unive.lisa.util.numeric.MathNumberConversionException;
 import it.unive.lisa.util.representation.StringRepresentation;
 import it.unive.lisa.util.representation.StructuredRepresentation;
 
@@ -156,7 +160,7 @@ public class IntervalRounding
 
 	@Override
 	public String toString() {
-		return "Values: " + interval.toString() + ", abs error: " + absErr.toString();
+		return "Values=" + interval.toString() + ", abs error=" + absErr.toString();
 	}
 
 	// logic for evaluating expressions below

@@ -11,10 +11,13 @@ import it.unive.lisa.program.cfg.ProgramPoint;
 import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.ValueExpression;
+import it.unive.lisa.symbolic.value.operator.binary.ComparisonEq;
+import it.unive.lisa.symbolic.value.operator.binary.ComparisonGe;
+import it.unive.lisa.symbolic.value.operator.binary.ComparisonGt;
+import it.unive.lisa.symbolic.value.operator.binary.ComparisonLt;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonLe;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -85,15 +88,20 @@ public class TwoVariableLinearInequality
 			throws SemanticException {
 		if (expression instanceof BinaryExpression) {
 			BinaryExpression binary = (BinaryExpression) expression;
-			if (binary.getOperator() instanceof ComparisonLe
-					&& binary.getLeft() instanceof Identifier
-					&& binary.getRight() instanceof Identifier) {
+			if (binary.getLeft() instanceof Identifier && binary.getRight() instanceof Identifier) {
 				Identifier left = (Identifier) binary.getLeft();
 				Identifier right = (Identifier) binary.getRight();
-				Constraint constraint = new Constraint(left, right, 1, -1, 0);
-				ConstraintSet singleton = new ConstraintSet(Collections.singleton(constraint));
-				return putState(left, getState(left).glb(singleton))
-						.putState(right, getState(right).glb(singleton));
+
+				if (binary.getOperator() instanceof ComparisonLe)
+					return addConstraint(left, right, 0);
+				if (binary.getOperator() instanceof ComparisonLt)
+					return addConstraint(left, right, -1);
+				if (binary.getOperator() instanceof ComparisonGe)
+					return addConstraint(right, left, 0);
+				if (binary.getOperator() instanceof ComparisonGt)
+					return addConstraint(right, left, -1);
+				if (binary.getOperator() instanceof ComparisonEq)
+					return addConstraint(left, right, 0).addConstraint(right, left, 0);
 			}
 		}
 
@@ -138,14 +146,20 @@ public class TwoVariableLinearInequality
 			throws SemanticException {
 		if (expression instanceof BinaryExpression) {
 			BinaryExpression binary = (BinaryExpression) expression;
-			if (binary.getOperator() instanceof ComparisonLe
-					&& binary.getLeft() instanceof Identifier
-					&& binary.getRight() instanceof Identifier) {
+			if (binary.getLeft() instanceof Identifier && binary.getRight() instanceof Identifier) {
 				Identifier left = (Identifier) binary.getLeft();
 				Identifier right = (Identifier) binary.getRight();
-				Constraint constraint = new Constraint(left, right, 1, -1, 0);
-				if (getState(left).contains(constraint) && getState(right).contains(constraint))
-					return Satisfiability.SATISFIED;
+
+				if (binary.getOperator() instanceof ComparisonLe)
+					return satisfiesConstraint(left, right, 0);
+				if (binary.getOperator() instanceof ComparisonLt)
+					return satisfiesConstraint(left, right, -1);
+				if (binary.getOperator() instanceof ComparisonGe)
+					return satisfiesConstraint(right, left, 0);
+				if (binary.getOperator() instanceof ComparisonGt)
+					return satisfiesConstraint(right, left, -1);
+				if (binary.getOperator() instanceof ComparisonEq)
+					return satisfiesConstraint(left, right, 0).glb(satisfiesConstraint(right, left, 0));
 			}
 		}
 
@@ -164,6 +178,26 @@ public class TwoVariableLinearInequality
 			ScopeToken token)
 			throws SemanticException {
 		return this;
+	}
+
+	private TwoVariableLinearInequality addConstraint(
+			Identifier left,
+			Identifier right,
+			int constant) {
+		Constraint constraint = new Constraint(left, right, 1, -1, constant);
+		ConstraintSet singleton = new ConstraintSet(Collections.singleton(constraint));
+		return putState(left, getState(left).glb(singleton))
+				.putState(right, getState(right).glb(singleton));
+	}
+
+	private Satisfiability satisfiesConstraint(
+			Identifier left,
+			Identifier right,
+			int constant) {
+		Constraint constraint = new Constraint(left, right, 1, -1, constant);
+		if (getState(left).contains(constraint) && getState(right).contains(constraint))
+			return Satisfiability.SATISFIED;
+		return Satisfiability.UNKNOWN;
 	}
 
 	public static class Constraint {

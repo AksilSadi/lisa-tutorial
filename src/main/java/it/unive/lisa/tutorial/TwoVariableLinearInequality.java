@@ -18,6 +18,7 @@ import it.unive.lisa.symbolic.value.operator.binary.ComparisonLt;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonLe;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -67,7 +68,23 @@ public class TwoVariableLinearInequality
 			ProgramPoint pp,
 			SemanticOracle oracle)
 			throws SemanticException {
-		return this;
+		if (function == null)
+			return this;
+
+		Map<Identifier, ConstraintSet> result = mkNewFunction(function, true);
+		for (Map.Entry<Identifier, ConstraintSet> entry : function.entrySet()) {
+			Set<Constraint> filtered = new HashSet<>();
+			for (Constraint constraint : entry.getValue().elements)
+				if (!constraint.mentions(id))
+					filtered.add(constraint);
+
+			if (entry.getKey().equals(id))
+				result.remove(id);
+			else
+				result.put(entry.getKey(), new ConstraintSet(filtered));
+		}
+
+		return mk(lattice, result);
 	}
 
 	@Override
@@ -118,11 +135,22 @@ public class TwoVariableLinearInequality
 	public TwoVariableLinearInequality forgetIdentifier(
 			Identifier id)
 			throws SemanticException {
-		if (function == null || !function.containsKey(id))
+		if (function == null)
 			return this;
 
 		Map<Identifier, ConstraintSet> result = mkNewFunction(function, true);
-		result.remove(id);
+		for (Map.Entry<Identifier, ConstraintSet> entry : function.entrySet()) {
+			Set<Constraint> filtered = new HashSet<>();
+			for (Constraint constraint : entry.getValue().elements)
+				if (!constraint.mentions(id))
+					filtered.add(constraint);
+
+			if (entry.getKey().equals(id))
+				result.remove(id);
+			else
+				result.put(entry.getKey(), new ConstraintSet(filtered));
+		}
+
 		return mk(lattice, result);
 	}
 
@@ -184,6 +212,9 @@ public class TwoVariableLinearInequality
 			Identifier left,
 			Identifier right,
 			int constant) {
+		if (conflictsWithKnownConstraint(left, right, constant))
+			return bottom();
+
 		Constraint constraint = new Constraint(left, right, 1, -1, constant);
 		ConstraintSet singleton = new ConstraintSet(Collections.singleton(constraint));
 		return putState(left, getState(left).glb(singleton))
@@ -194,10 +225,41 @@ public class TwoVariableLinearInequality
 			Identifier left,
 			Identifier right,
 			int constant) {
-		Constraint constraint = new Constraint(left, right, 1, -1, constant);
-		if (getState(left).contains(constraint) && getState(right).contains(constraint))
-			return Satisfiability.SATISFIED;
+		for (Constraint known : getState(left).elements)
+			if (known.left.equals(left)
+					&& known.right.equals(right)
+					&& known.leftCoeff == 1
+					&& known.rightCoeff == -1
+					&& known.constant <= constant)
+				return Satisfiability.SATISFIED;
+
+		if (conflictsWithKnownConstraint(left, right, constant))
+			return Satisfiability.NOT_SATISFIED;
+
 		return Satisfiability.UNKNOWN;
+	}
+
+	private boolean conflictsWithKnownConstraint(
+			Identifier left,
+			Identifier right,
+			int constant) {
+		for (Constraint known : getState(left).elements)
+			if (known.left.equals(right)
+					&& known.right.equals(left)
+					&& known.leftCoeff == 1
+					&& known.rightCoeff == -1
+					&& constant + known.constant < 0)
+				return true;
+
+		for (Constraint known : getState(right).elements)
+			if (known.left.equals(right)
+					&& known.right.equals(left)
+					&& known.leftCoeff == 1
+					&& known.rightCoeff == -1
+					&& constant + known.constant < 0)
+				return true;
+
+		return false;
 	}
 
 	public static class Constraint {
@@ -219,6 +281,11 @@ public class TwoVariableLinearInequality
 			this.leftCoeff = leftCoeff;
 			this.rightCoeff = rightCoeff;
 			this.constant = constant;
+		}
+
+		public boolean mentions(
+				Identifier id) {
+			return left.equals(id) || right.equals(id);
 		}
 
 		@Override

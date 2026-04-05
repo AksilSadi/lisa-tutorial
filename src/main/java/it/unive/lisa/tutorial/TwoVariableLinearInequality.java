@@ -9,13 +9,18 @@ import it.unive.lisa.analysis.lattices.Satisfiability;
 import it.unive.lisa.analysis.value.ValueDomain;
 import it.unive.lisa.program.cfg.ProgramPoint;
 import it.unive.lisa.symbolic.value.BinaryExpression;
+import it.unive.lisa.symbolic.value.Constant;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.ValueExpression;
+import it.unive.lisa.symbolic.value.operator.AdditionOperator;
+import it.unive.lisa.symbolic.value.operator.SubtractionOperator;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonEq;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGe;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGt;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonLt;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonLe;
+import it.unive.lisa.util.representation.StringRepresentation;
+import it.unive.lisa.util.representation.StructuredRepresentation;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -68,23 +73,29 @@ public class TwoVariableLinearInequality
 			ProgramPoint pp,
 			SemanticOracle oracle)
 			throws SemanticException {
-		if (function == null)
-			return this;
+		TwoVariableLinearInequality cleaned = cleanupIdentifier(id);
 
-		Map<Identifier, ConstraintSet> result = mkNewFunction(function, true);
-		for (Map.Entry<Identifier, ConstraintSet> entry : function.entrySet()) {
-			Set<Constraint> filtered = new HashSet<>();
-			for (Constraint constraint : entry.getValue().elements)
-				if (!constraint.mentions(id))
-					filtered.add(constraint);
-
-			if (entry.getKey().equals(id))
-				result.remove(id);
-			else
-				result.put(entry.getKey(), new ConstraintSet(filtered));
+		if (expression instanceof Identifier) {
+			Identifier other = (Identifier) expression;
+			return cleaned.addEqualityConstraint(id, other, 0);
 		}
 
-		return mk(lattice, result);
+		if (expression instanceof BinaryExpression) {
+			BinaryExpression binary = (BinaryExpression) expression;
+			if (binary.getLeft() instanceof Identifier && binary.getRight() instanceof Constant) {
+				Identifier other = (Identifier) binary.getLeft();
+				Object value = ((Constant) binary.getRight()).getValue();
+				if (value instanceof Integer) {
+					int constant = (Integer) value;
+					if (binary.getOperator() instanceof AdditionOperator)
+						return cleaned.addEqualityConstraint(id, other, constant);
+					if (binary.getOperator() instanceof SubtractionOperator)
+						return cleaned.addEqualityConstraint(id, other, -constant);
+				}
+			}
+		}
+
+		return cleaned;
 	}
 
 	@Override
@@ -135,23 +146,7 @@ public class TwoVariableLinearInequality
 	public TwoVariableLinearInequality forgetIdentifier(
 			Identifier id)
 			throws SemanticException {
-		if (function == null)
-			return this;
-
-		Map<Identifier, ConstraintSet> result = mkNewFunction(function, true);
-		for (Map.Entry<Identifier, ConstraintSet> entry : function.entrySet()) {
-			Set<Constraint> filtered = new HashSet<>();
-			for (Constraint constraint : entry.getValue().elements)
-				if (!constraint.mentions(id))
-					filtered.add(constraint);
-
-			if (entry.getKey().equals(id))
-				result.remove(id);
-			else
-				result.put(entry.getKey(), new ConstraintSet(filtered));
-		}
-
-		return mk(lattice, result);
+		return cleanupIdentifier(id);
 	}
 
 	@Override
@@ -162,7 +157,17 @@ public class TwoVariableLinearInequality
 			return this;
 
 		Map<Identifier, ConstraintSet> result = mkNewFunction(function, true);
-		result.keySet().removeIf(test);
+		for (Map.Entry<Identifier, ConstraintSet> entry : function.entrySet()) {
+			Set<Constraint> filtered = new HashSet<>();
+			for (Constraint constraint : entry.getValue().elements)
+				if (!test.test(constraint.left) && !test.test(constraint.right))
+					filtered.add(constraint);
+
+			if (test.test(entry.getKey()))
+				result.remove(entry.getKey());
+			else
+				result.put(entry.getKey(), new ConstraintSet(filtered));
+		}
 		return mk(lattice, result);
 	}
 
@@ -208,6 +213,11 @@ public class TwoVariableLinearInequality
 		return this;
 	}
 
+	@Override
+	public StructuredRepresentation representation() {
+		return new StringRepresentation(toString());
+	}
+
 	private TwoVariableLinearInequality addConstraint(
 			Identifier left,
 			Identifier right,
@@ -219,6 +229,14 @@ public class TwoVariableLinearInequality
 		ConstraintSet singleton = new ConstraintSet(Collections.singleton(constraint));
 		return putState(left, getState(left).glb(singleton))
 				.putState(right, getState(right).glb(singleton));
+	}
+
+	private TwoVariableLinearInequality addEqualityConstraint(
+			Identifier left,
+			Identifier right,
+			int offset) {
+		return addConstraint(left, right, offset)
+				.addConstraint(right, left, -offset);
 	}
 
 	private Satisfiability satisfiesConstraint(
@@ -260,6 +278,27 @@ public class TwoVariableLinearInequality
 				return true;
 
 		return false;
+	}
+
+	private TwoVariableLinearInequality cleanupIdentifier(
+			Identifier id) {
+		if (function == null)
+			return this;
+
+		Map<Identifier, ConstraintSet> result = mkNewFunction(function, true);
+		for (Map.Entry<Identifier, ConstraintSet> entry : function.entrySet()) {
+			Set<Constraint> filtered = new HashSet<>();
+			for (Constraint constraint : entry.getValue().elements)
+				if (!constraint.mentions(id))
+					filtered.add(constraint);
+
+			if (entry.getKey().equals(id))
+				result.remove(id);
+			else
+				result.put(entry.getKey(), new ConstraintSet(filtered));
+		}
+
+		return mk(lattice, result);
 	}
 
 	public static class Constraint {
@@ -306,6 +345,11 @@ public class TwoVariableLinearInequality
 		@Override
 		public int hashCode() {
 			return Objects.hash(left, right, leftCoeff, rightCoeff, constant);
+		}
+
+		@Override
+		public String toString() {
+			return leftCoeff + "*" + left + " + " + rightCoeff + "*" + right + " <= " + constant;
 		}
 	}
 

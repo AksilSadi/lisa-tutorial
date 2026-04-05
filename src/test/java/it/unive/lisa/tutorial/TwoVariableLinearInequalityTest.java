@@ -6,6 +6,8 @@ import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Constant;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.Variable;
+import it.unive.lisa.symbolic.value.operator.AdditionOperator;
+import it.unive.lisa.symbolic.value.operator.SubtractionOperator;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonEq;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGe;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGt;
@@ -195,5 +197,92 @@ public class TwoVariableLinearInequalityTest {
 
 		assertEquals(Satisfiability.UNKNOWN, updated.satisfies(condition, null, null));
 		assertTrue(updated.getState(y).elements.isEmpty());
+	}
+
+	@Test
+	public void forgetIdentifiersIfRemovesMatchingKeysAndConstraints() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		BinaryExpression condition = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				y,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assume(condition, null, null, null)
+				.forgetIdentifiersIf(id -> id.equals(y));
+
+		assertTrue(!updated.knowsIdentifier(y));
+		assertEquals(Satisfiability.UNKNOWN, updated.satisfies(condition, null, null));
+		assertTrue(updated.getState(x).elements.isEmpty());
+	}
+
+	@Test
+	public void assignVariableStoresEqualityBothDirections() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		BinaryExpression equality = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				y,
+				ComparisonEq.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assign(x, y, null, null);
+
+		assertEquals(Satisfiability.SATISFIED, updated.satisfies(equality, null, null));
+	}
+
+	@Test
+	public void assignAdditionStoresOffsetConstraints() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Constant two = new Constant(Untyped.INSTANCE, 2, SyntheticLocation.INSTANCE);
+		BinaryExpression expr = new BinaryExpression(
+				Untyped.INSTANCE,
+				y,
+				two,
+				AdditionOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assign(x, expr, null, null);
+		TwoVariableLinearInequality.Constraint xy =
+				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, 2);
+		TwoVariableLinearInequality.Constraint yx =
+				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, -2);
+
+		assertTrue(updated.getState(x).contains(xy));
+		assertTrue(updated.getState(y).contains(xy));
+		assertTrue(updated.getState(x).contains(yx));
+		assertTrue(updated.getState(y).contains(yx));
+	}
+
+	@Test
+	public void assignSubtractionStoresNegativeOffsetConstraints() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Constant two = new Constant(Untyped.INSTANCE, 2, SyntheticLocation.INSTANCE);
+		BinaryExpression expr = new BinaryExpression(
+				Untyped.INSTANCE,
+				y,
+				two,
+				SubtractionOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assign(x, expr, null, null);
+		TwoVariableLinearInequality.Constraint xy =
+				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, -2);
+		TwoVariableLinearInequality.Constraint yx =
+				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, 2);
+
+		assertTrue(updated.getState(x).contains(xy));
+		assertTrue(updated.getState(y).contains(xy));
+		assertTrue(updated.getState(x).contains(yx));
+		assertTrue(updated.getState(y).contains(yx));
 	}
 }

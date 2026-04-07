@@ -1,6 +1,16 @@
 package it.unive.lisa.tutorial;
 
+import it.unive.lisa.AnalysisException;
+import it.unive.lisa.DefaultConfiguration;
+import it.unive.lisa.LiSA;
+import it.unive.lisa.analysis.ScopeToken;
+import it.unive.lisa.analysis.heap.pointbased.FieldSensitivePointBasedHeap;
 import it.unive.lisa.analysis.lattices.Satisfiability;
+import it.unive.lisa.conf.LiSAConfiguration;
+import it.unive.lisa.conf.LiSAConfiguration.GraphType;
+import it.unive.lisa.imp.IMPFrontend;
+import it.unive.lisa.imp.ParsingException;
+import it.unive.lisa.program.Program;
 import it.unive.lisa.program.SyntheticLocation;
 import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Constant;
@@ -284,5 +294,123 @@ public class TwoVariableLinearInequalityTest {
 		assertTrue(updated.getState(y).contains(xy));
 		assertTrue(updated.getState(x).contains(yx));
 		assertTrue(updated.getState(y).contains(yx));
+	}
+
+	@Test
+	public void assumeSupportsOffsetsOnTheRight() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Constant two = new Constant(Untyped.INSTANCE, 2, SyntheticLocation.INSTANCE);
+		BinaryExpression right = new BinaryExpression(
+				Untyped.INSTANCE,
+				y,
+				two,
+				AdditionOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression condition = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				right,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assume(condition, null, null, null);
+		TwoVariableLinearInequality.Constraint expected =
+				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, 2);
+
+		assertTrue(updated.getState(x).contains(expected));
+		assertEquals(Satisfiability.SATISFIED, updated.satisfies(condition, null, null));
+	}
+
+	@Test
+	public void assumeSupportsOffsetsOnTheLeft() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Constant one = new Constant(Untyped.INSTANCE, 1, SyntheticLocation.INSTANCE);
+		BinaryExpression left = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				one,
+				AdditionOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression condition = new BinaryExpression(
+				Untyped.INSTANCE,
+				left,
+				y,
+				ComparisonLt.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assume(condition, null, null, null);
+		TwoVariableLinearInequality.Constraint expected =
+				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, -2);
+
+		assertTrue(updated.getState(x).contains(expected));
+		assertEquals(Satisfiability.SATISFIED, updated.satisfies(condition, null, null));
+	}
+
+	@Test
+	public void assignSupportsConstantOnTheLeftOfAddition() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Constant two = new Constant(Untyped.INSTANCE, 2, SyntheticLocation.INSTANCE);
+		BinaryExpression expr = new BinaryExpression(
+				Untyped.INSTANCE,
+				two,
+				y,
+				AdditionOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assign(x, expr, null, null);
+		TwoVariableLinearInequality.Constraint xy =
+				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, 2);
+		TwoVariableLinearInequality.Constraint yx =
+				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, -2);
+
+		assertTrue(updated.getState(x).contains(xy));
+		assertTrue(updated.getState(y).contains(yx));
+	}
+
+	@Test
+	public void pushAndPopScopePreserveConstraints() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		BinaryExpression condition = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				y,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		ScopeToken token = new ScopeToken(() -> SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality scoped = domain.assume(condition, null, null, null).pushScope(token);
+		Identifier scopedX = (Identifier) x.pushScope(token);
+		Identifier scopedY = (Identifier) y.pushScope(token);
+		BinaryExpression scopedCondition = new BinaryExpression(
+				Untyped.INSTANCE,
+				scopedX,
+				scopedY,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		assertEquals(Satisfiability.SATISFIED, scoped.satisfies(scopedCondition, null, null));
+		assertEquals(Satisfiability.SATISFIED, scoped.popScope(token).satisfies(condition, null, null));
+	}
+
+	@Test
+	public void testTvpiAnalysis() throws ParsingException, AnalysisException {
+		Program program = IMPFrontend.processFile("inputs/tvpi.imp");
+		LiSAConfiguration conf = new DefaultConfiguration();
+		conf.workdir = "outputs/tvpi";
+		conf.analysisGraphs = GraphType.HTML;
+		conf.abstractState = DefaultConfiguration.simpleState(
+				new FieldSensitivePointBasedHeap(),
+				new TwoVariableLinearInequality(),
+				DefaultConfiguration.defaultTypeDomain());
+
+		new LiSA(conf).run(program);
 	}
 }

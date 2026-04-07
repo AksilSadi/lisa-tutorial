@@ -1,0 +1,15 @@
+class tvpi {
+
+	basic() {
+		def x = 0;
+		def y = 1;
+
+		if (x < y)
+			x = y - 1;
+
+		if (x <= y)
+			y = x + 2;
+
+		return y;
+	}
+}

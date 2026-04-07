@@ -11,6 +11,7 @@ import it.unive.lisa.program.cfg.ProgramPoint;
 import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Constant;
 import it.unive.lisa.symbolic.value.Identifier;
+import it.unive.lisa.symbolic.value.OutOfScopeIdentifier;
 import it.unive.lisa.symbolic.value.ValueExpression;
 import it.unive.lisa.symbolic.value.operator.AdditionOperator;
 import it.unive.lisa.symbolic.value.operator.SubtractionOperator;
@@ -73,27 +74,13 @@ public class TwoVariableLinearInequality
 			ProgramPoint pp,
 			SemanticOracle oracle)
 			throws SemanticException {
+		if (isBottom())
+			return this;
+
 		TwoVariableLinearInequality cleaned = cleanupIdentifier(id);
-
-		if (expression instanceof Identifier) {
-			Identifier other = (Identifier) expression;
-			return cleaned.addEqualityConstraint(id, other, 0);
-		}
-
-		if (expression instanceof BinaryExpression) {
-			BinaryExpression binary = (BinaryExpression) expression;
-			if (binary.getLeft() instanceof Identifier && binary.getRight() instanceof Constant) {
-				Identifier other = (Identifier) binary.getLeft();
-				Object value = ((Constant) binary.getRight()).getValue();
-				if (value instanceof Integer) {
-					int constant = (Integer) value;
-					if (binary.getOperator() instanceof AdditionOperator)
-						return cleaned.addEqualityConstraint(id, other, constant);
-					if (binary.getOperator() instanceof SubtractionOperator)
-						return cleaned.addEqualityConstraint(id, other, -constant);
-				}
-			}
-		}
+		LinearForm form = asLinearForm(expression);
+		if (form != null)
+			return cleaned.addEqualityConstraint(id, form.variable, form.offset);
 
 		return cleaned;
 	}
@@ -114,23 +101,15 @@ public class TwoVariableLinearInequality
 			ProgramPoint dest,
 			SemanticOracle oracle)
 			throws SemanticException {
+		if (isBottom())
+			return this;
+
 		if (expression instanceof BinaryExpression) {
 			BinaryExpression binary = (BinaryExpression) expression;
-			if (binary.getLeft() instanceof Identifier && binary.getRight() instanceof Identifier) {
-				Identifier left = (Identifier) binary.getLeft();
-				Identifier right = (Identifier) binary.getRight();
-
-				if (binary.getOperator() instanceof ComparisonLe)
-					return addConstraint(left, right, 0);
-				if (binary.getOperator() instanceof ComparisonLt)
-					return addConstraint(left, right, -1);
-				if (binary.getOperator() instanceof ComparisonGe)
-					return addConstraint(right, left, 0);
-				if (binary.getOperator() instanceof ComparisonGt)
-					return addConstraint(right, left, -1);
-				if (binary.getOperator() instanceof ComparisonEq)
-					return addConstraint(left, right, 0).addConstraint(right, left, 0);
-			}
+			LinearForm left = asLinearForm(binary.getLeft());
+			LinearForm right = asLinearForm(binary.getRight());
+			if (left != null && right != null)
+				return assumeNormalizedComparison(left, right, binary);
 		}
 
 		return this;
@@ -177,23 +156,15 @@ public class TwoVariableLinearInequality
 			ProgramPoint pp,
 			SemanticOracle oracle)
 			throws SemanticException {
+		if (isBottom())
+			return Satisfiability.BOTTOM;
+
 		if (expression instanceof BinaryExpression) {
 			BinaryExpression binary = (BinaryExpression) expression;
-			if (binary.getLeft() instanceof Identifier && binary.getRight() instanceof Identifier) {
-				Identifier left = (Identifier) binary.getLeft();
-				Identifier right = (Identifier) binary.getRight();
-
-				if (binary.getOperator() instanceof ComparisonLe)
-					return satisfiesConstraint(left, right, 0);
-				if (binary.getOperator() instanceof ComparisonLt)
-					return satisfiesConstraint(left, right, -1);
-				if (binary.getOperator() instanceof ComparisonGe)
-					return satisfiesConstraint(right, left, 0);
-				if (binary.getOperator() instanceof ComparisonGt)
-					return satisfiesConstraint(right, left, -1);
-				if (binary.getOperator() instanceof ComparisonEq)
-					return satisfiesConstraint(left, right, 0).glb(satisfiesConstraint(right, left, 0));
-			}
+			LinearForm left = asLinearForm(binary.getLeft());
+			LinearForm right = asLinearForm(binary.getRight());
+			if (left != null && right != null)
+				return satisfiesNormalizedComparison(left, right, binary);
 		}
 
 		return Satisfiability.UNKNOWN;
@@ -203,25 +174,33 @@ public class TwoVariableLinearInequality
 	public TwoVariableLinearInequality pushScope(
 			ScopeToken token)
 			throws SemanticException {
-		return this;
+		return remapIdentifiers(id -> (Identifier) id.pushScope(token));
 	}
 
 	@Override
 	public TwoVariableLinearInequality popScope(
 			ScopeToken token)
 			throws SemanticException {
-		return this;
+		return remapIdentifiers(id -> {
+			Identifier popped = (Identifier) id.popScope(token);
+			return popped == null ? id : popped;
+		});
 	}
 
 	@Override
 	public StructuredRepresentation representation() {
-		return new StringRepresentation(toString());
+		return super.representation();
 	}
 
 	private TwoVariableLinearInequality addConstraint(
 			Identifier left,
 			Identifier right,
 			int constant) {
+		if (isBottom())
+			return this;
+		if (left.equals(right))
+			return constant < 0 ? bottom() : this;
+
 		if (conflictsWithKnownConstraint(left, right, constant))
 			return bottom();
 
@@ -243,6 +222,9 @@ public class TwoVariableLinearInequality
 			Identifier left,
 			Identifier right,
 			int constant) {
+		if (left.equals(right))
+			return constant >= 0 ? Satisfiability.SATISFIED : Satisfiability.NOT_SATISFIED;
+
 		for (Constraint known : getState(left).elements)
 			if (known.left.equals(left)
 					&& known.right.equals(right)
@@ -261,6 +243,9 @@ public class TwoVariableLinearInequality
 			Identifier left,
 			Identifier right,
 			int constant) {
+		if (left.equals(right))
+			return constant < 0;
+
 		for (Constraint known : getState(left).elements)
 			if (known.left.equals(right)
 					&& known.right.equals(left)
@@ -299,6 +284,138 @@ public class TwoVariableLinearInequality
 		}
 
 		return mk(lattice, result);
+	}
+
+	private TwoVariableLinearInequality assumeNormalizedComparison(
+			LinearForm left,
+			LinearForm right,
+			BinaryExpression binary) {
+		int constant = right.offset - left.offset;
+
+		if (binary.getOperator() instanceof ComparisonLe)
+			return addConstraint(left.variable, right.variable, constant);
+		if (binary.getOperator() instanceof ComparisonLt)
+			return addConstraint(left.variable, right.variable, constant - 1);
+		if (binary.getOperator() instanceof ComparisonGe)
+			return addConstraint(right.variable, left.variable, -constant);
+		if (binary.getOperator() instanceof ComparisonGt)
+			return addConstraint(right.variable, left.variable, -constant - 1);
+		if (binary.getOperator() instanceof ComparisonEq)
+			return addConstraint(left.variable, right.variable, constant)
+					.addConstraint(right.variable, left.variable, -constant);
+
+		return this;
+	}
+
+	private Satisfiability satisfiesNormalizedComparison(
+			LinearForm left,
+			LinearForm right,
+			BinaryExpression binary) {
+		int constant = right.offset - left.offset;
+
+		if (binary.getOperator() instanceof ComparisonLe)
+			return satisfiesConstraint(left.variable, right.variable, constant);
+		if (binary.getOperator() instanceof ComparisonLt)
+			return satisfiesConstraint(left.variable, right.variable, constant - 1);
+		if (binary.getOperator() instanceof ComparisonGe)
+			return satisfiesConstraint(right.variable, left.variable, -constant);
+		if (binary.getOperator() instanceof ComparisonGt)
+			return satisfiesConstraint(right.variable, left.variable, -constant - 1);
+		if (binary.getOperator() instanceof ComparisonEq)
+			return satisfiesConstraint(left.variable, right.variable, constant)
+					.glb(satisfiesConstraint(right.variable, left.variable, -constant));
+
+		return Satisfiability.UNKNOWN;
+	}
+
+	private LinearForm asLinearForm(
+			ValueExpression expression) {
+		if (expression instanceof Identifier)
+			return new LinearForm((Identifier) expression, 0);
+
+		if (!(expression instanceof BinaryExpression))
+			return null;
+
+		BinaryExpression binary = (BinaryExpression) expression;
+		Integer leftConstant = asIntegerConstant(binary.getLeft());
+		Integer rightConstant = asIntegerConstant(binary.getRight());
+
+		if (binary.getOperator() instanceof AdditionOperator) {
+			if (binary.getLeft() instanceof Identifier && rightConstant != null)
+				return new LinearForm((Identifier) binary.getLeft(), rightConstant);
+			if (leftConstant != null && binary.getRight() instanceof Identifier)
+				return new LinearForm((Identifier) binary.getRight(), leftConstant);
+		}
+
+		if (binary.getOperator() instanceof SubtractionOperator
+				&& binary.getLeft() instanceof Identifier
+				&& rightConstant != null)
+			return new LinearForm((Identifier) binary.getLeft(), -rightConstant);
+
+		return null;
+	}
+
+	private Integer asIntegerConstant(
+			ValueExpression expression) {
+		if (!(expression instanceof Constant))
+			return null;
+
+		Object value = ((Constant) expression).getValue();
+		return value instanceof Integer ? (Integer) value : null;
+	}
+
+	private TwoVariableLinearInequality remapIdentifiers(
+			IdentifierMapper mapper)
+			throws SemanticException {
+		if (function == null)
+			return this;
+
+		Map<Identifier, ConstraintSet> result = mkNewFunction(null, false);
+		for (Map.Entry<Identifier, ConstraintSet> entry : function.entrySet()) {
+			Identifier mappedKey = mapper.apply(entry.getKey());
+			ConstraintSet mappedState = remapConstraintSet(entry.getValue(), mapper);
+			ConstraintSet previous = result.get(mappedKey);
+			result.put(mappedKey, previous == null ? mappedState : previous.glb(mappedState));
+		}
+
+		return mk(lattice, result);
+	}
+
+	private ConstraintSet remapConstraintSet(
+			ConstraintSet state,
+			IdentifierMapper mapper)
+			throws SemanticException {
+		Set<Constraint> remapped = new HashSet<>();
+		for (Constraint constraint : state.elements)
+			remapped.add(new Constraint(
+					mapper.apply(constraint.left),
+					mapper.apply(constraint.right),
+					constraint.leftCoeff,
+					constraint.rightCoeff,
+					constraint.constant));
+
+		return new ConstraintSet(remapped, state.isTop());
+	}
+
+	@FunctionalInterface
+	private interface IdentifierMapper {
+
+		Identifier apply(
+				Identifier id)
+				throws SemanticException;
+	}
+
+	private static final class LinearForm {
+
+		private final Identifier variable;
+		private final int offset;
+
+		private LinearForm(
+				Identifier variable,
+				int offset) {
+			this.variable = variable;
+			this.offset = offset;
+		}
 	}
 
 	public static class Constraint {

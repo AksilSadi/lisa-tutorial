@@ -846,3 +846,143 @@ org.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequ
 2026.04.05 21:28:27 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
 2026.04.05 21:31:30 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
 2026.04.05 21:31:31 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.04.06 00:40:09 INFO  Shutting down server
+2026.04.06 00:40:09 INFO  Memory monitor stopped
+2026.04.06 00:40:09 INFO  shutting down Metals
+2026.04.06 00:40:09 INFO  Exiting server
+2026.04.07 22:03:37 INFO  Started: Metals version 1.6.7 in folders 'C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial' for client Visual Studio Code 1.114.0.
+2026.04.07 22:03:37 INFO  Memory monitor started
+2026.04.07 22:03:38 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.07 22:06:46 INFO  Started: Metals version 1.6.7 in folders 'C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial' for client Visual Studio Code 1.114.0.
+2026.04.07 22:06:46 INFO  Memory monitor started
+2026.04.07 22:06:51 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.07 22:06:52 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.
+2026.04.07 22:06:56 INFO  Started: Metals version 1.6.7 in folders 'C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial' for client Visual Studio Code 1.114.0.
+2026.04.07 22:06:56 INFO  Memory monitor started
+2026.04.07 22:07:00 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+Exception in thread "pool-1-thread-6" java.lang.OutOfMemoryError
+	at java.base/java.util.zip.Deflater.init(Native Method)
+	at java.base/java.util.zip.Deflater.<init>(Deflater.java:202)
+	at java.base/java.util.zip.GZIPOutputStream.<init>(GZIPOutputStream.java:93)
+	at java.base/java.util.zip.GZIPOutputStream.<init>(GZIPOutputStream.java:70)
+	at scala.meta.internal.metals.Compression$.compress(Compression.scala:30)
+	at scala.meta.internal.metals.CompressedPackageIndex$.flushBucket$1(CompressedPackageIndex.scala:100)
+	at scala.meta.internal.metals.CompressedPackageIndex$.newBucket$1(CompressedPackageIndex.scala:117)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$4(CompressedPackageIndex.scala:136)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$3(CompressedPackageIndex.scala:134)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$3$adapted(CompressedPackageIndex.scala:124)
+	at scala.collection.IterableOnceOps.foreach(IterableOnce.scala:630)
+	at scala.collection.IterableOnceOps.foreach$(IterableOnce.scala:628)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1313)
+	at scala.meta.internal.metals.CompressedPackageIndex$.fromPackages(CompressedPackageIndex.scala:124)
+	at scala.meta.internal.metals.ClasspathSearch$Indexer$.$anonfun$default$1(ClasspathSearch.scala:106)
+	at scala.meta.internal.metals.WorkspaceSymbolProvider.indexClasspathUnsafe(WorkspaceSymbolProvider.scala:269)
+	at scala.meta.internal.metals.WorkspaceSymbolProvider.indexClasspath(WorkspaceSymbolProvider.scala:152)
+	at scala.meta.internal.metals.MetalsLspService.$anonfun$initialized$2(MetalsLspService.scala:691)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:691)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:500)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+Exception in thread "pool-1-thread-3" java.lang.OutOfMemoryError
+	at java.base/java.util.zip.Deflater.init(Native Method)
+	at java.base/java.util.zip.Deflater.<init>(Deflater.java:202)
+	at java.base/java.util.zip.GZIPOutputStream.<init>(GZIPOutputStream.java:93)
+	at java.base/java.util.zip.GZIPOutputStream.<init>(GZIPOutputStream.java:70)
+	at scala.meta.internal.metals.Compression$.compress(Compression.scala:30)
+	at scala.meta.internal.metals.CompressedPackageIndex$.flushBucket$1(CompressedPackageIndex.scala:100)
+	at scala.meta.internal.metals.CompressedPackageIndex$.newBucket$1(CompressedPackageIndex.scala:117)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$4(CompressedPackageIndex.scala:136)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$3(CompressedPackageIndex.scala:134)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$3$adapted(CompressedPackageIndex.scala:124)
+	at scala.collection.IterableOnceOps.foreach(IterableOnce.scala:630)
+	at scala.collection.IterableOnceOps.foreach$(IterableOnce.scala:628)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1313)
+	at scala.meta.internal.metals.CompressedPackageIndex$.fromPackages(CompressedPackageIndex.scala:124)
+	at scala.meta.internal.metals.ClasspathSearch$Indexer$.$anonfun$default$1(ClasspathSearch.scala:106)
+	at scala.meta.internal.metals.WorkspaceSymbolProvider.indexClasspathUnsafe(WorkspaceSymbolProvider.scala:269)
+	at scala.meta.internal.metals.WorkspaceSymbolProvider.indexClasspath(WorkspaceSymbolProvider.scala:152)
+	at scala.meta.internal.metals.MetalsLspService.onUserConfigUpdate(MetalsLspService.scala:718)
+	at scala.meta.internal.metals.ProjectMetalsLspService.onUserConfigUpdate(ProjectMetalsLspService.scala:734)
+	at scala.meta.internal.metals.UserConfigurationSync.$anonfun$onDidChangeConfiguration$2(UserConfigurationSync.scala:44)
+	at scala.Option.map(Option.scala:242)
+	at scala.meta.internal.metals.UserConfigurationSync.$anonfun$optSyncUserConfiguration$4(UserConfigurationSync.scala:80)
+	at scala.collection.immutable.List.map(List.scala:236)
+	at scala.meta.internal.metals.UserConfigurationSync.$anonfun$optSyncUserConfiguration$3(UserConfigurationSync.scala:75)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:503)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+2026.04.07 22:07:05 INFO  Started: Metals version 1.6.7 in folders 'C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial' for client Visual Studio Code 1.114.0.
+2026.04.07 22:07:05 INFO  Memory monitor started
+2026.04.07 22:07:10 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+Exception in thread "pool-1-thread-3" Exception in thread "pool-1-thread-5" java.lang.OutOfMemoryError
+	at java.base/java.util.zip.Deflater.init(Native Method)
+	at java.base/java.util.zip.Deflater.<init>(Deflater.java:202)
+	at java.base/java.util.zip.GZIPOutputStream.<init>(GZIPOutputStream.java:93)
+	at java.base/java.util.zip.GZIPOutputStream.<init>(GZIPOutputStream.java:70)
+	at scala.meta.internal.metals.Compression$.compress(Compression.scala:30)
+	at scala.meta.internal.metals.CompressedPackageIndex$.flushBucket$1(CompressedPackageIndex.scala:100)
+	at scala.meta.internal.metals.CompressedPackageIndex$.newBucket$1(CompressedPackageIndex.scala:117)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$4(CompressedPackageIndex.scala:136)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$3(CompressedPackageIndex.scala:134)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$3$adapted(CompressedPackageIndex.scala:124)
+	at scala.collection.IterableOnceOps.foreach(IterableOnce.scala:630)
+	at scala.collection.IterableOnceOps.foreach$(IterableOnce.scala:628)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1313)
+	at scala.meta.internal.metals.CompressedPackageIndex$.fromPackages(CompressedPackageIndex.scala:124)
+	at scala.meta.internal.metals.ClasspathSearch$Indexer$.$anonfun$default$1(ClasspathSearch.scala:106)
+	at scala.meta.internal.metals.WorkspaceSymbolProvider.indexClasspathUnsafe(WorkspaceSymbolProvider.scala:269)
+	at scala.meta.internal.metals.WorkspaceSymbolProvider.indexClasspath(WorkspaceSymbolProvider.scala:152)
+	at scala.meta.internal.metals.MetalsLspService.$anonfun$initialized$2(MetalsLspService.scala:691)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:691)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:500)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+java.lang.OutOfMemoryError
+	at java.base/java.util.zip.Deflater.init(Native Method)
+	at java.base/java.util.zip.Deflater.<init>(Deflater.java:202)
+	at java.base/java.util.zip.GZIPOutputStream.<init>(GZIPOutputStream.java:93)
+	at java.base/java.util.zip.GZIPOutputStream.<init>(GZIPOutputStream.java:70)
+	at scala.meta.internal.metals.Compression$.compress(Compression.scala:30)
+	at scala.meta.internal.metals.CompressedPackageIndex$.flushBucket$1(CompressedPackageIndex.scala:100)
+	at scala.meta.internal.metals.CompressedPackageIndex$.newBucket$1(CompressedPackageIndex.scala:117)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$4(CompressedPackageIndex.scala:136)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$3(CompressedPackageIndex.scala:134)
+	at scala.meta.internal.metals.CompressedPackageIndex$.$anonfun$fromPackages$3$adapted(CompressedPackageIndex.scala:124)
+	at scala.collection.IterableOnceOps.foreach(IterableOnce.scala:630)
+	at scala.collection.IterableOnceOps.foreach$(IterableOnce.scala:628)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1313)
+	at scala.meta.internal.metals.CompressedPackageIndex$.fromPackages(CompressedPackageIndex.scala:124)
+	at scala.meta.internal.metals.ClasspathSearch$Indexer$.$anonfun$default$1(ClasspathSearch.scala:106)
+	at scala.meta.internal.metals.WorkspaceSymbolProvider.indexClasspathUnsafe(WorkspaceSymbolProvider.scala:269)
+	at scala.meta.internal.metals.WorkspaceSymbolProvider.indexClasspath(WorkspaceSymbolProvider.scala:152)
+	at scala.meta.internal.metals.MetalsLspService.onUserConfigUpdate(MetalsLspService.scala:718)
+	at scala.meta.internal.metals.ProjectMetalsLspService.onUserConfigUpdate(ProjectMetalsLspService.scala:734)
+	at scala.meta.internal.metals.UserConfigurationSync.$anonfun$onDidChangeConfiguration$2(UserConfigurationSync.scala:44)
+	at scala.Option.map(Option.scala:242)
+	at scala.meta.internal.metals.UserConfigurationSync.$anonfun$optSyncUserConfiguration$4(UserConfigurationSync.scala:80)
+	at scala.collection.immutable.List.map(List.scala:236)
+	at scala.meta.internal.metals.UserConfigurationSync.$anonfun$optSyncUserConfiguration$3(UserConfigurationSync.scala:75)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:503)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+2026.04.07 22:07:15 INFO  Started: Metals version 1.6.7 in folders 'C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial' for client Visual Studio Code 1.114.0.
+2026.04.07 22:07:15 INFO  Memory monitor started
+2026.04.07 22:07:20 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.07 22:07:49 INFO  Shutting down server
+2026.04.07 22:07:49 INFO  Memory monitor stopped
+2026.04.07 22:07:49 INFO  shutting down Metals
+2026.04.07 22:07:49 INFO  Exiting server
+2026.04.07 22:12:02 INFO  Started: Metals version 1.6.7 in folders 'C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial' for client Visual Studio Code 1.114.0.
+2026.04.07 22:12:02 INFO  Memory monitor started
+2026.04.07 22:12:04 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.07 22:12:04 INFO  no build target found for C:\Users\DELL\OneDrive\Bureau\sorbonne\M2\S2\TAS\lisa-tutorial\src\main\java\it\unive\lisa\tutorial\TwoVariableLinearInequality.java. Using fallback presentation compiler.

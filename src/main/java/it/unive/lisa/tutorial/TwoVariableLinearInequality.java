@@ -11,9 +11,9 @@ import it.unive.lisa.program.cfg.ProgramPoint;
 import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Constant;
 import it.unive.lisa.symbolic.value.Identifier;
-import it.unive.lisa.symbolic.value.OutOfScopeIdentifier;
 import it.unive.lisa.symbolic.value.ValueExpression;
 import it.unive.lisa.symbolic.value.operator.AdditionOperator;
+import it.unive.lisa.symbolic.value.operator.MultiplicationOperator;
 import it.unive.lisa.symbolic.value.operator.SubtractionOperator;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonEq;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGe;
@@ -78,9 +78,9 @@ public class TwoVariableLinearInequality
 			return this;
 
 		TwoVariableLinearInequality cleaned = cleanupIdentifier(id);
-		LinearForm form = asLinearForm(expression);
-		if (form != null)
-			return cleaned.addEqualityConstraint(id, form.variable, form.offset);
+		AffineForm form = asAffineForm(expression);
+		if (form != null && form.variable != null)
+			return cleaned.addEqualityConstraint(id, 1, form.variable, form.coefficient, form.offset);
 
 		return cleaned;
 	}
@@ -106,8 +106,8 @@ public class TwoVariableLinearInequality
 
 		if (expression instanceof BinaryExpression) {
 			BinaryExpression binary = (BinaryExpression) expression;
-			LinearForm left = asLinearForm(binary.getLeft());
-			LinearForm right = asLinearForm(binary.getRight());
+			AffineForm left = asAffineForm(binary.getLeft());
+			AffineForm right = asAffineForm(binary.getRight());
 			if (left != null && right != null)
 				return assumeNormalizedComparison(left, right, binary);
 		}
@@ -161,8 +161,8 @@ public class TwoVariableLinearInequality
 
 		if (expression instanceof BinaryExpression) {
 			BinaryExpression binary = (BinaryExpression) expression;
-			LinearForm left = asLinearForm(binary.getLeft());
-			LinearForm right = asLinearForm(binary.getRight());
+			AffineForm left = asAffineForm(binary.getLeft());
+			AffineForm right = asAffineForm(binary.getRight());
 			if (left != null && right != null)
 				return satisfiesNormalizedComparison(left, right, binary);
 		}
@@ -196,44 +196,74 @@ public class TwoVariableLinearInequality
 			Identifier left,
 			Identifier right,
 			int constant) {
+		return addConstraint(left, 1, right, -1, constant);
+	}
+
+	private TwoVariableLinearInequality addConstraint(
+			Identifier left,
+			int leftCoeff,
+			Identifier right,
+			int rightCoeff,
+			int constant) {
 		if (isBottom())
 			return this;
-		if (left.equals(right))
+		if (left.equals(right) && leftCoeff + rightCoeff == 0)
 			return constant < 0 ? bottom() : this;
 
-		if (conflictsWithKnownConstraint(left, right, constant))
+		if (conflictsWithKnownConstraint(left, leftCoeff, right, rightCoeff, constant))
 			return bottom();
 
-		Constraint constraint = new Constraint(left, right, 1, -1, constant);
+		Constraint constraint = new Constraint(left, right, leftCoeff, rightCoeff, constant);
 		ConstraintSet singleton = new ConstraintSet(Collections.singleton(constraint));
-		return putState(left, getState(left).glb(singleton))
-				.putState(right, getState(right).glb(singleton));
+		TwoVariableLinearInequality withLeft = putState(left, getState(left).glb(singleton));
+		return left.equals(right) ? withLeft : withLeft.putState(right, getState(right).glb(singleton));
+	}
+
+	private TwoVariableLinearInequality addEqualityConstraint(
+			Identifier left,
+			int leftCoeff,
+			Identifier right,
+			int rightCoeff,
+			int offset) {
+		return addConstraint(left, leftCoeff, right, -rightCoeff, offset)
+				.addConstraint(left, -leftCoeff, right, rightCoeff, -offset);
 	}
 
 	private TwoVariableLinearInequality addEqualityConstraint(
 			Identifier left,
 			Identifier right,
 			int offset) {
-		return addConstraint(left, right, offset)
-				.addConstraint(right, left, -offset);
+		return addEqualityConstraint(left, 1, right, 1, offset);
 	}
 
 	private Satisfiability satisfiesConstraint(
 			Identifier left,
 			Identifier right,
 			int constant) {
-		if (left.equals(right))
+		return satisfiesConstraint(left, 1, right, -1, constant);
+	}
+
+	private Satisfiability satisfiesConstraint(
+			Identifier left,
+			int leftCoeff,
+			Identifier right,
+			int rightCoeff,
+			int constant) {
+		if (left.equals(right) && leftCoeff + rightCoeff == 0)
 			return constant >= 0 ? Satisfiability.SATISFIED : Satisfiability.NOT_SATISFIED;
 
-		for (Constraint known : getState(left).elements)
-			if (known.left.equals(left)
-					&& known.right.equals(right)
-					&& known.leftCoeff == 1
-					&& known.rightCoeff == -1
+		for (Constraint known : getState(left).elements) {
+			AlignedCoefficients aligned = align(known, left, right);
+			if (aligned == null)
+				continue;
+
+			if (aligned.leftCoeff == leftCoeff
+					&& aligned.rightCoeff == rightCoeff
 					&& known.constant <= constant)
 				return Satisfiability.SATISFIED;
+		}
 
-		if (conflictsWithKnownConstraint(left, right, constant))
+		if (conflictsWithKnownConstraint(left, leftCoeff, right, rightCoeff, constant))
 			return Satisfiability.NOT_SATISFIED;
 
 		return Satisfiability.UNKNOWN;
@@ -241,26 +271,21 @@ public class TwoVariableLinearInequality
 
 	private boolean conflictsWithKnownConstraint(
 			Identifier left,
+			int leftCoeff,
 			Identifier right,
+			int rightCoeff,
 			int constant) {
-		if (left.equals(right))
+		if (left.equals(right) && leftCoeff + rightCoeff == 0)
 			return constant < 0;
 
-		for (Constraint known : getState(left).elements)
-			if (known.left.equals(right)
-					&& known.right.equals(left)
-					&& known.leftCoeff == 1
-					&& known.rightCoeff == -1
+		for (Constraint known : getState(left).elements) {
+			AlignedCoefficients aligned = align(known, left, right);
+			if (aligned != null
+					&& aligned.leftCoeff == -leftCoeff
+					&& aligned.rightCoeff == -rightCoeff
 					&& constant + known.constant < 0)
 				return true;
-
-		for (Constraint known : getState(right).elements)
-			if (known.left.equals(right)
-					&& known.right.equals(left)
-					&& known.leftCoeff == 1
-					&& known.rightCoeff == -1
-					&& constant + known.constant < 0)
-				return true;
+		}
 
 		return false;
 	}
@@ -287,72 +312,151 @@ public class TwoVariableLinearInequality
 	}
 
 	private TwoVariableLinearInequality assumeNormalizedComparison(
-			LinearForm left,
-			LinearForm right,
+			AffineForm left,
+			AffineForm right,
 			BinaryExpression binary) {
-		int constant = right.offset - left.offset;
+		NormalizedConstraint normalized = normalize(left, right);
+		if (normalized == null)
+			return evaluateConstantComparison(left.offset, right.offset, binary);
 
 		if (binary.getOperator() instanceof ComparisonLe)
-			return addConstraint(left.variable, right.variable, constant);
+			return addConstraint(normalized.left, normalized.leftCoeff, normalized.right, normalized.rightCoeff,
+					normalized.constant);
 		if (binary.getOperator() instanceof ComparisonLt)
-			return addConstraint(left.variable, right.variable, constant - 1);
+			return addConstraint(normalized.left, normalized.leftCoeff, normalized.right, normalized.rightCoeff,
+					normalized.constant - 1);
 		if (binary.getOperator() instanceof ComparisonGe)
-			return addConstraint(right.variable, left.variable, -constant);
+			return addConstraint(normalized.left, -normalized.leftCoeff, normalized.right, -normalized.rightCoeff,
+					-normalized.constant);
 		if (binary.getOperator() instanceof ComparisonGt)
-			return addConstraint(right.variable, left.variable, -constant - 1);
+			return addConstraint(normalized.left, -normalized.leftCoeff, normalized.right, -normalized.rightCoeff,
+					-normalized.constant - 1);
 		if (binary.getOperator() instanceof ComparisonEq)
-			return addConstraint(left.variable, right.variable, constant)
-					.addConstraint(right.variable, left.variable, -constant);
+			return addConstraint(normalized.left, normalized.leftCoeff, normalized.right, normalized.rightCoeff,
+					normalized.constant)
+					.addConstraint(normalized.left, -normalized.leftCoeff, normalized.right,
+							-normalized.rightCoeff, -normalized.constant);
 
 		return this;
 	}
 
 	private Satisfiability satisfiesNormalizedComparison(
-			LinearForm left,
-			LinearForm right,
+			AffineForm left,
+			AffineForm right,
 			BinaryExpression binary) {
-		int constant = right.offset - left.offset;
+		NormalizedConstraint normalized = normalize(left, right);
+		if (normalized == null)
+			return evaluateConstantComparisonSatisfiability(left.offset, right.offset, binary);
 
 		if (binary.getOperator() instanceof ComparisonLe)
-			return satisfiesConstraint(left.variable, right.variable, constant);
+			return satisfiesConstraint(normalized.left, normalized.leftCoeff, normalized.right, normalized.rightCoeff,
+					normalized.constant);
 		if (binary.getOperator() instanceof ComparisonLt)
-			return satisfiesConstraint(left.variable, right.variable, constant - 1);
+			return satisfiesConstraint(normalized.left, normalized.leftCoeff, normalized.right, normalized.rightCoeff,
+					normalized.constant - 1);
 		if (binary.getOperator() instanceof ComparisonGe)
-			return satisfiesConstraint(right.variable, left.variable, -constant);
+			return satisfiesConstraint(normalized.left, -normalized.leftCoeff, normalized.right,
+					-normalized.rightCoeff, -normalized.constant);
 		if (binary.getOperator() instanceof ComparisonGt)
-			return satisfiesConstraint(right.variable, left.variable, -constant - 1);
+			return satisfiesConstraint(normalized.left, -normalized.leftCoeff, normalized.right,
+					-normalized.rightCoeff, -normalized.constant - 1);
 		if (binary.getOperator() instanceof ComparisonEq)
-			return satisfiesConstraint(left.variable, right.variable, constant)
-					.glb(satisfiesConstraint(right.variable, left.variable, -constant));
+			return satisfiesConstraint(normalized.left, normalized.leftCoeff, normalized.right, normalized.rightCoeff,
+					normalized.constant)
+					.glb(satisfiesConstraint(normalized.left, -normalized.leftCoeff, normalized.right,
+							-normalized.rightCoeff, -normalized.constant));
 
 		return Satisfiability.UNKNOWN;
 	}
 
-	private LinearForm asLinearForm(
+	private AffineForm asAffineForm(
 			ValueExpression expression) {
 		if (expression instanceof Identifier)
-			return new LinearForm((Identifier) expression, 0);
+			return new AffineForm((Identifier) expression, 1, 0);
+
+		Integer constant = asIntegerConstant(expression);
+		if (constant != null)
+			return new AffineForm(null, 0, constant);
 
 		if (!(expression instanceof BinaryExpression))
 			return null;
 
 		BinaryExpression binary = (BinaryExpression) expression;
-		Integer leftConstant = asIntegerConstant(binary.getLeft());
-		Integer rightConstant = asIntegerConstant(binary.getRight());
+		AffineForm left = asAffineForm(binary.getLeft());
+		AffineForm right = asAffineForm(binary.getRight());
+		if (left == null || right == null)
+			return null;
 
 		if (binary.getOperator() instanceof AdditionOperator) {
-			if (binary.getLeft() instanceof Identifier && rightConstant != null)
-				return new LinearForm((Identifier) binary.getLeft(), rightConstant);
-			if (leftConstant != null && binary.getRight() instanceof Identifier)
-				return new LinearForm((Identifier) binary.getRight(), leftConstant);
+			if (left.variable != null && right.variable == null)
+				return new AffineForm(left.variable, left.coefficient, left.offset + right.offset);
+			if (left.variable == null && right.variable != null)
+				return new AffineForm(right.variable, right.coefficient, left.offset + right.offset);
 		}
 
 		if (binary.getOperator() instanceof SubtractionOperator
-				&& binary.getLeft() instanceof Identifier
-				&& rightConstant != null)
-			return new LinearForm((Identifier) binary.getLeft(), -rightConstant);
+				&& left.variable != null
+				&& right.variable == null)
+			return new AffineForm(left.variable, left.coefficient, left.offset - right.offset);
+
+		if (binary.getOperator() instanceof MultiplicationOperator) {
+			if (left.variable != null && right.variable == null)
+				return new AffineForm(left.variable, left.coefficient * right.offset, left.offset * right.offset);
+			if (left.variable == null && right.variable != null)
+				return new AffineForm(right.variable, left.offset * right.coefficient, left.offset * right.offset);
+		}
 
 		return null;
+	}
+
+	private NormalizedConstraint normalize(
+			AffineForm left,
+			AffineForm right) {
+		if (left.variable == null && right.variable == null)
+			return null;
+
+		if (left.variable != null && right.variable != null)
+			return new NormalizedConstraint(left.variable, left.coefficient, right.variable, -right.coefficient,
+					right.offset - left.offset);
+
+		if (left.variable != null)
+			return new NormalizedConstraint(left.variable, left.coefficient, left.variable, 0,
+					right.offset - left.offset);
+
+		return new NormalizedConstraint(right.variable, 0, right.variable, -right.coefficient,
+				right.offset - left.offset);
+	}
+
+	private TwoVariableLinearInequality evaluateConstantComparison(
+			int left,
+			int right,
+			BinaryExpression binary) {
+		boolean satisfied = evaluateConstantComparisonBoolean(left, right, binary);
+		return satisfied ? this : bottom();
+	}
+
+	private Satisfiability evaluateConstantComparisonSatisfiability(
+			int left,
+			int right,
+			BinaryExpression binary) {
+		return Satisfiability.fromBoolean(evaluateConstantComparisonBoolean(left, right, binary));
+	}
+
+	private boolean evaluateConstantComparisonBoolean(
+			int left,
+			int right,
+			BinaryExpression binary) {
+		if (binary.getOperator() instanceof ComparisonLe)
+			return left <= right;
+		if (binary.getOperator() instanceof ComparisonLt)
+			return left < right;
+		if (binary.getOperator() instanceof ComparisonGe)
+			return left >= right;
+		if (binary.getOperator() instanceof ComparisonGt)
+			return left > right;
+		if (binary.getOperator() instanceof ComparisonEq)
+			return left == right;
+		return false;
 	}
 
 	private Integer asIntegerConstant(
@@ -405,17 +509,66 @@ public class TwoVariableLinearInequality
 				throws SemanticException;
 	}
 
-	private static final class LinearForm {
+	private static final class AffineForm {
 
 		private final Identifier variable;
+		private final int coefficient;
 		private final int offset;
 
-		private LinearForm(
+		private AffineForm(
 				Identifier variable,
+				int coefficient,
 				int offset) {
 			this.variable = variable;
+			this.coefficient = coefficient;
 			this.offset = offset;
 		}
+	}
+
+	private static final class NormalizedConstraint {
+
+		private final Identifier left;
+		private final int leftCoeff;
+		private final Identifier right;
+		private final int rightCoeff;
+		private final int constant;
+
+		private NormalizedConstraint(
+				Identifier left,
+				int leftCoeff,
+				Identifier right,
+				int rightCoeff,
+				int constant) {
+			this.left = left;
+			this.leftCoeff = leftCoeff;
+			this.right = right;
+			this.rightCoeff = rightCoeff;
+			this.constant = constant;
+		}
+	}
+
+	private static final class AlignedCoefficients {
+
+		private final int leftCoeff;
+		private final int rightCoeff;
+
+		private AlignedCoefficients(
+				int leftCoeff,
+				int rightCoeff) {
+			this.leftCoeff = leftCoeff;
+			this.rightCoeff = rightCoeff;
+		}
+	}
+
+	private AlignedCoefficients align(
+			Constraint constraint,
+			Identifier left,
+			Identifier right) {
+		if (constraint.left.equals(left) && constraint.right.equals(right))
+			return new AlignedCoefficients(constraint.leftCoeff, constraint.rightCoeff);
+		if (constraint.left.equals(right) && constraint.right.equals(left))
+			return new AlignedCoefficients(constraint.rightCoeff, constraint.leftCoeff);
+		return null;
 	}
 
 	public static class Constraint {

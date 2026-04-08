@@ -17,6 +17,7 @@ import it.unive.lisa.symbolic.value.Constant;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.Variable;
 import it.unive.lisa.symbolic.value.operator.AdditionOperator;
+import it.unive.lisa.symbolic.value.operator.MultiplicationOperator;
 import it.unive.lisa.symbolic.value.operator.SubtractionOperator;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonEq;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGe;
@@ -398,6 +399,118 @@ public class TwoVariableLinearInequalityTest {
 
 		assertEquals(Satisfiability.SATISFIED, scoped.satisfies(scopedCondition, null, null));
 		assertEquals(Satisfiability.SATISFIED, scoped.popScope(token).satisfies(condition, null, null));
+	}
+
+	@Test
+	public void assumeSupportsGeneralTwoVariableCoefficients() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Constant two = new Constant(Untyped.INSTANCE, 2, SyntheticLocation.INSTANCE);
+		Constant three = new Constant(Untyped.INSTANCE, 3, SyntheticLocation.INSTANCE);
+		Constant four = new Constant(Untyped.INSTANCE, 4, SyntheticLocation.INSTANCE);
+		BinaryExpression left = new BinaryExpression(
+				Untyped.INSTANCE,
+				two,
+				x,
+				MultiplicationOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression scaledY = new BinaryExpression(
+				Untyped.INSTANCE,
+				three,
+				y,
+				MultiplicationOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression right = new BinaryExpression(
+				Untyped.INSTANCE,
+				scaledY,
+				four,
+				AdditionOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression condition = new BinaryExpression(
+				Untyped.INSTANCE,
+				left,
+				right,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assume(condition, null, null, null);
+		TwoVariableLinearInequality.Constraint expected =
+				new TwoVariableLinearInequality.Constraint(x, y, 2, -3, 4);
+
+		assertTrue(updated.getState(x).contains(expected));
+		assertTrue(updated.getState(y).contains(expected));
+		assertEquals(Satisfiability.SATISFIED, updated.satisfies(condition, null, null));
+	}
+
+	@Test
+	public void assignSupportsScaledVariablePlusConstant() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Constant two = new Constant(Untyped.INSTANCE, 2, SyntheticLocation.INSTANCE);
+		Constant three = new Constant(Untyped.INSTANCE, 3, SyntheticLocation.INSTANCE);
+		BinaryExpression scaledY = new BinaryExpression(
+				Untyped.INSTANCE,
+				two,
+				y,
+				MultiplicationOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression expr = new BinaryExpression(
+				Untyped.INSTANCE,
+				scaledY,
+				three,
+				AdditionOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assign(x, expr, null, null);
+		TwoVariableLinearInequality.Constraint xy =
+				new TwoVariableLinearInequality.Constraint(x, y, 1, -2, 3);
+		TwoVariableLinearInequality.Constraint opposite =
+				new TwoVariableLinearInequality.Constraint(x, y, -1, 2, -3);
+
+		assertTrue(updated.getState(x).contains(xy));
+		assertTrue(updated.getState(y).contains(xy));
+		assertTrue(updated.getState(x).contains(opposite));
+		assertTrue(updated.getState(y).contains(opposite));
+	}
+
+	@Test
+	public void contradictoryGeneralCoefficientComparisonsYieldBottom() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Constant two = new Constant(Untyped.INSTANCE, 2, SyntheticLocation.INSTANCE);
+		Constant three = new Constant(Untyped.INSTANCE, 3, SyntheticLocation.INSTANCE);
+		BinaryExpression left = new BinaryExpression(
+				Untyped.INSTANCE,
+				two,
+				x,
+				MultiplicationOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression right = new BinaryExpression(
+				Untyped.INSTANCE,
+				three,
+				y,
+				MultiplicationOperator.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression le = new BinaryExpression(
+				Untyped.INSTANCE,
+				left,
+				right,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression gt = new BinaryExpression(
+				Untyped.INSTANCE,
+				left,
+				right,
+				ComparisonGt.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assume(le, null, null, null)
+				.assume(gt, null, null, null);
+
+		assertTrue(updated.isBottom());
 	}
 
 	@Test

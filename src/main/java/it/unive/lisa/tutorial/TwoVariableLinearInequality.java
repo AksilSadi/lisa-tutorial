@@ -9,6 +9,7 @@ import it.unive.lisa.analysis.lattices.InverseSetLattice;
 import it.unive.lisa.analysis.lattices.Satisfiability;
 import it.unive.lisa.analysis.value.ValueDomain;
 import it.unive.lisa.program.cfg.ProgramPoint;
+import it.unive.lisa.symbolic.SymbolicExpression;
 import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Constant;
 import it.unive.lisa.symbolic.value.Identifier;
@@ -32,6 +33,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -273,10 +275,12 @@ public class TwoVariableLinearInequality
 			return bottom();
 
 		ConstraintSet singleton = new ConstraintSet(Collections.singleton(normalized));
-		TwoVariableLinearInequality withLeft = putState(normalized.left, getState(normalized.left).glb(singleton));
+		TwoVariableLinearInequality withLeft = putState(normalized.left,
+				mergeConstraintSets(getState(normalized.left), singleton));
 		if (normalized.right == null || normalized.left.equals(normalized.right))
 			return withLeft;
-		return withLeft.putState(normalized.right, getState(normalized.right).glb(singleton));
+		return withLeft.putState(normalized.right,
+				mergeConstraintSets(withLeft.getState(normalized.right), singleton));
 	}
 
 	private TwoVariableLinearInequality addEqualityConstraint(
@@ -414,7 +418,7 @@ public class TwoVariableLinearInequality
 	}
 
 	private AffineForm asAffineForm(
-			ValueExpression expression) {
+			SymbolicExpression expression) {
 		if (expression instanceof Identifier)
 			return new AffineForm((Identifier) expression, 1, 0);
 
@@ -504,7 +508,7 @@ public class TwoVariableLinearInequality
 	}
 
 	private Integer asIntegerConstant(
-			ValueExpression expression) {
+			SymbolicExpression expression) {
 		if (!(expression instanceof Constant))
 			return null;
 
@@ -521,6 +525,14 @@ public class TwoVariableLinearInequality
 			constraints.addAll(state.elements);
 
 		return constraints;
+	}
+
+	private ConstraintSet mergeConstraintSets(
+			ConstraintSet left,
+			ConstraintSet right) {
+		Set<Constraint> merged = new HashSet<>(left.elements);
+		merged.addAll(right.elements);
+		return new ConstraintSet(merged);
 	}
 
 	private Set<Constraint> closedConstraints() {

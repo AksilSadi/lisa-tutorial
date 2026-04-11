@@ -16,14 +16,14 @@ import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Constant;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.Variable;
-import it.unive.lisa.symbolic.value.operator.AdditionOperator;
-import it.unive.lisa.symbolic.value.operator.MultiplicationOperator;
-import it.unive.lisa.symbolic.value.operator.SubtractionOperator;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonEq;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGe;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGt;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonLt;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonLe;
+import it.unive.lisa.symbolic.value.operator.binary.NumericNonOverflowingAdd;
+import it.unive.lisa.symbolic.value.operator.binary.NumericNonOverflowingMul;
+import it.unive.lisa.symbolic.value.operator.binary.NumericNonOverflowingSub;
 import it.unive.lisa.type.Untyped;
 import org.junit.Test;
 
@@ -88,10 +88,10 @@ public class TwoVariableLinearInequalityTest {
 
 		TwoVariableLinearInequality updated = domain.assume(condition, null, null, null);
 		TwoVariableLinearInequality.Constraint expected =
-				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, 0);
+				new TwoVariableLinearInequality.Constraint(x, y, -1, 1, 0);
 
-		assertTrue(updated.getState(x).contains(expected));
-		assertTrue(updated.getState(y).contains(expected));
+		assertContainsEquivalentConstraint(updated.getState(x), expected);
+		assertContainsEquivalentConstraint(updated.getState(y), expected);
 		assertEquals(Satisfiability.SATISFIED, updated.satisfies(condition, null, null));
 	}
 
@@ -109,10 +109,10 @@ public class TwoVariableLinearInequalityTest {
 
 		TwoVariableLinearInequality updated = domain.assume(condition, null, null, null);
 		TwoVariableLinearInequality.Constraint expected =
-				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, -1);
+				new TwoVariableLinearInequality.Constraint(x, y, -1, 1, -1);
 
-		assertTrue(updated.getState(x).contains(expected));
-		assertTrue(updated.getState(y).contains(expected));
+		assertContainsEquivalentConstraint(updated.getState(x), expected);
+		assertContainsEquivalentConstraint(updated.getState(y), expected);
 		assertEquals(Satisfiability.SATISFIED, updated.satisfies(condition, null, null));
 	}
 
@@ -132,12 +132,12 @@ public class TwoVariableLinearInequalityTest {
 		TwoVariableLinearInequality.Constraint xy =
 				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, 0);
 		TwoVariableLinearInequality.Constraint yx =
-				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, 0);
+				new TwoVariableLinearInequality.Constraint(x, y, -1, 1, 0);
 
 		assertTrue(updated.getState(x).contains(xy));
 		assertTrue(updated.getState(y).contains(xy));
-		assertTrue(updated.getState(x).contains(yx));
-		assertTrue(updated.getState(y).contains(yx));
+		assertContainsEquivalentConstraint(updated.getState(x), yx);
+		assertContainsEquivalentConstraint(updated.getState(y), yx);
 		assertEquals(Satisfiability.SATISFIED, updated.satisfies(condition, null, null));
 	}
 
@@ -257,19 +257,19 @@ public class TwoVariableLinearInequalityTest {
 				Untyped.INSTANCE,
 				y,
 				two,
-				AdditionOperator.INSTANCE,
+				NumericNonOverflowingAdd.INSTANCE,
 				SyntheticLocation.INSTANCE);
 
 		TwoVariableLinearInequality updated = domain.assign(x, expr, null, null);
 		TwoVariableLinearInequality.Constraint xy =
 				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, 2);
 		TwoVariableLinearInequality.Constraint yx =
-				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, -2);
+				new TwoVariableLinearInequality.Constraint(x, y, -1, 1, -2);
 
 		assertTrue(updated.getState(x).contains(xy));
 		assertTrue(updated.getState(y).contains(xy));
-		assertTrue(updated.getState(x).contains(yx));
-		assertTrue(updated.getState(y).contains(yx));
+		assertContainsEquivalentConstraint(updated.getState(x), yx);
+		assertContainsEquivalentConstraint(updated.getState(y), yx);
 	}
 
 	@Test
@@ -282,19 +282,19 @@ public class TwoVariableLinearInequalityTest {
 				Untyped.INSTANCE,
 				y,
 				two,
-				SubtractionOperator.INSTANCE,
+				NumericNonOverflowingSub.INSTANCE,
 				SyntheticLocation.INSTANCE);
 
 		TwoVariableLinearInequality updated = domain.assign(x, expr, null, null);
 		TwoVariableLinearInequality.Constraint xy =
 				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, -2);
 		TwoVariableLinearInequality.Constraint yx =
-				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, 2);
+				new TwoVariableLinearInequality.Constraint(x, y, -1, 1, 2);
 
 		assertTrue(updated.getState(x).contains(xy));
 		assertTrue(updated.getState(y).contains(xy));
-		assertTrue(updated.getState(x).contains(yx));
-		assertTrue(updated.getState(y).contains(yx));
+		assertContainsEquivalentConstraint(updated.getState(x), yx);
+		assertContainsEquivalentConstraint(updated.getState(y), yx);
 	}
 
 	@Test
@@ -307,7 +307,7 @@ public class TwoVariableLinearInequalityTest {
 				Untyped.INSTANCE,
 				y,
 				two,
-				AdditionOperator.INSTANCE,
+				NumericNonOverflowingAdd.INSTANCE,
 				SyntheticLocation.INSTANCE);
 		BinaryExpression condition = new BinaryExpression(
 				Untyped.INSTANCE,
@@ -334,7 +334,7 @@ public class TwoVariableLinearInequalityTest {
 				Untyped.INSTANCE,
 				x,
 				one,
-				AdditionOperator.INSTANCE,
+				NumericNonOverflowingAdd.INSTANCE,
 				SyntheticLocation.INSTANCE);
 		BinaryExpression condition = new BinaryExpression(
 				Untyped.INSTANCE,
@@ -361,17 +361,30 @@ public class TwoVariableLinearInequalityTest {
 				Untyped.INSTANCE,
 				two,
 				y,
-				AdditionOperator.INSTANCE,
+				NumericNonOverflowingAdd.INSTANCE,
 				SyntheticLocation.INSTANCE);
 
 		TwoVariableLinearInequality updated = domain.assign(x, expr, null, null);
 		TwoVariableLinearInequality.Constraint xy =
 				new TwoVariableLinearInequality.Constraint(x, y, 1, -1, 2);
 		TwoVariableLinearInequality.Constraint yx =
-				new TwoVariableLinearInequality.Constraint(y, x, 1, -1, -2);
+				new TwoVariableLinearInequality.Constraint(x, y, -1, 1, -2);
 
 		assertTrue(updated.getState(x).contains(xy));
-		assertTrue(updated.getState(y).contains(yx));
+		assertContainsEquivalentConstraint(updated.getState(y), yx);
+	}
+
+	private static void assertContainsEquivalentConstraint(
+			TwoVariableLinearInequality.ConstraintSet state,
+			TwoVariableLinearInequality.Constraint expected) {
+		TwoVariableLinearInequality.Constraint swapped =
+				new TwoVariableLinearInequality.Constraint(
+						expected.right,
+						expected.left,
+						expected.rightCoeff,
+						expected.leftCoeff,
+						expected.constant);
+		assertTrue(state.contains(expected) || state.contains(swapped));
 	}
 
 	@Test
@@ -413,19 +426,19 @@ public class TwoVariableLinearInequalityTest {
 				Untyped.INSTANCE,
 				two,
 				x,
-				MultiplicationOperator.INSTANCE,
+				NumericNonOverflowingMul.INSTANCE,
 				SyntheticLocation.INSTANCE);
 		BinaryExpression scaledY = new BinaryExpression(
 				Untyped.INSTANCE,
 				three,
 				y,
-				MultiplicationOperator.INSTANCE,
+				NumericNonOverflowingMul.INSTANCE,
 				SyntheticLocation.INSTANCE);
 		BinaryExpression right = new BinaryExpression(
 				Untyped.INSTANCE,
 				scaledY,
 				four,
-				AdditionOperator.INSTANCE,
+				NumericNonOverflowingAdd.INSTANCE,
 				SyntheticLocation.INSTANCE);
 		BinaryExpression condition = new BinaryExpression(
 				Untyped.INSTANCE,
@@ -454,13 +467,13 @@ public class TwoVariableLinearInequalityTest {
 				Untyped.INSTANCE,
 				two,
 				y,
-				MultiplicationOperator.INSTANCE,
+				NumericNonOverflowingMul.INSTANCE,
 				SyntheticLocation.INSTANCE);
 		BinaryExpression expr = new BinaryExpression(
 				Untyped.INSTANCE,
 				scaledY,
 				three,
-				AdditionOperator.INSTANCE,
+				NumericNonOverflowingAdd.INSTANCE,
 				SyntheticLocation.INSTANCE);
 
 		TwoVariableLinearInequality updated = domain.assign(x, expr, null, null);
@@ -486,13 +499,13 @@ public class TwoVariableLinearInequalityTest {
 				Untyped.INSTANCE,
 				two,
 				x,
-				MultiplicationOperator.INSTANCE,
+				NumericNonOverflowingMul.INSTANCE,
 				SyntheticLocation.INSTANCE);
 		BinaryExpression right = new BinaryExpression(
 				Untyped.INSTANCE,
 				three,
 				y,
-				MultiplicationOperator.INSTANCE,
+				NumericNonOverflowingMul.INSTANCE,
 				SyntheticLocation.INSTANCE);
 		BinaryExpression le = new BinaryExpression(
 				Untyped.INSTANCE,

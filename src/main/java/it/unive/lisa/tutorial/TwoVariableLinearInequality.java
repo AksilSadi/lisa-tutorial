@@ -539,6 +539,16 @@ public class TwoVariableLinearInequality
 		return computeClosure(allConstraints());
 	}
 
+	public Set<Constraint> getConstraints() {
+		return Collections.unmodifiableSet(new HashSet<>(closedConstraints()));
+	}
+
+	public TwoVariableLinearInequality addConstraint(
+			Constraint constraint) {
+		return addConstraint(constraint.left, constraint.leftCoeff, constraint.right, constraint.rightCoeff,
+				constraint.constant);
+	}
+
 	private Set<Identifier> sortedIdentifiers() {
 		TreeSet<Identifier> sorted = new TreeSet<>((left, right) -> {
 			int cmp = left.toString().compareTo(right.toString());

@@ -1,7 +1,16 @@
 package it.unive.lisa.tutorial;
 
+import it.unive.lisa.AnalysisException;
+import it.unive.lisa.DefaultConfiguration;
+import it.unive.lisa.LiSA;
+import it.unive.lisa.analysis.heap.pointbased.FieldSensitivePointBasedHeap;
 import it.unive.lisa.analysis.lattices.Satisfiability;
 import it.unive.lisa.analysis.nonrelational.value.ValueEnvironment;
+import it.unive.lisa.conf.LiSAConfiguration;
+import it.unive.lisa.conf.LiSAConfiguration.GraphType;
+import it.unive.lisa.imp.IMPFrontend;
+import it.unive.lisa.imp.ParsingException;
+import it.unive.lisa.program.Program;
 import it.unive.lisa.program.SyntheticLocation;
 import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Constant;
@@ -76,5 +85,19 @@ public class IntervalRoundingTwoVariableLinearInequalityCartesianTest {
 
 		assertTrue(refined.toValueInterval().low.geq(new MathNumber(2)));
 		assertTrue(refined.toValueInterval().high.leq(new MathNumber(5)));
+	}
+
+	@Test
+	public void testCartesianAnalysis() throws ParsingException, AnalysisException {
+		Program program = IMPFrontend.processFile("inputs/cartesian_tvpi.imp");
+		LiSAConfiguration conf = new DefaultConfiguration();
+		conf.workdir = "outputs/cartesian-tvpi";
+		conf.analysisGraphs = GraphType.HTML;
+		conf.abstractState = DefaultConfiguration.simpleState(
+				new FieldSensitivePointBasedHeap(),
+				new IntervalRoundingTwoVariableLinearInequalityCartesian(),
+				DefaultConfiguration.defaultTypeDomain());
+
+		new LiSA(conf).run(program);
 	}
 }

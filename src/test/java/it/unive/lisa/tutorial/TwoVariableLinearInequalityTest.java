@@ -514,6 +514,136 @@ public class TwoVariableLinearInequalityTest {
 	}
 
 	@Test
+	public void specialIdentifiersAreIgnored() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier heap = new Variable(Untyped.INSTANCE, "heap_tmp", SyntheticLocation.INSTANCE);
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		BinaryExpression condition = new BinaryExpression(
+				Untyped.INSTANCE,
+				heap,
+				x,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assume(condition, null, null, null)
+				.assign(heap, x, null, null);
+
+		assertEquals(Satisfiability.UNKNOWN, updated.satisfies(condition, null, null));
+		assertTrue(!updated.knowsIdentifier(heap));
+	}
+
+	@Test
+	public void closureDerivesTransitiveVariableConstraint() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Identifier z = new Variable(Untyped.INSTANCE, "z", SyntheticLocation.INSTANCE);
+		BinaryExpression xLeY = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				y,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression yLeZ = new BinaryExpression(
+				Untyped.INSTANCE,
+				y,
+				z,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression xLeZ = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				z,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assume(xLeY, null, null, null)
+				.assume(yLeZ, null, null, null);
+
+		assertEquals(Satisfiability.SATISFIED, updated.satisfies(xLeZ, null, null));
+	}
+
+	@Test
+	public void assumeSupportsConstantBounds() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Constant five = new Constant(Untyped.INSTANCE, 5, SyntheticLocation.INSTANCE);
+		Constant six = new Constant(Untyped.INSTANCE, 6, SyntheticLocation.INSTANCE);
+		BinaryExpression xLeFive = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				five,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression xGtFive = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				five,
+				ComparisonGt.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression xLtSix = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				six,
+				ComparisonLt.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assume(xLeFive, null, null, null);
+
+		assertEquals(Satisfiability.SATISFIED, updated.satisfies(xLeFive, null, null));
+		assertEquals(Satisfiability.NOT_SATISFIED, updated.satisfies(xGtFive, null, null));
+		assertEquals(Satisfiability.SATISFIED, updated.satisfies(xLtSix, null, null));
+	}
+
+	@Test
+	public void assignConstantStoresExactBound() throws Exception {
+		TwoVariableLinearInequality domain = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Constant four = new Constant(Untyped.INSTANCE, 4, SyntheticLocation.INSTANCE);
+		BinaryExpression xEqFour = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				four,
+				ComparisonEq.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		TwoVariableLinearInequality updated = domain.assign(x, four, null, null);
+
+		assertEquals(Satisfiability.SATISFIED, updated.satisfies(xEqFour, null, null));
+	}
+
+	@Test
+	public void lessOrEqualUsesDerivedConstraints() throws Exception {
+		TwoVariableLinearInequality first = new TwoVariableLinearInequality();
+		Identifier x = new Variable(Untyped.INSTANCE, "x", SyntheticLocation.INSTANCE);
+		Identifier y = new Variable(Untyped.INSTANCE, "y", SyntheticLocation.INSTANCE);
+		Identifier z = new Variable(Untyped.INSTANCE, "z", SyntheticLocation.INSTANCE);
+		BinaryExpression xLeY = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				y,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression yLeZ = new BinaryExpression(
+				Untyped.INSTANCE,
+				y,
+				z,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+		BinaryExpression xLeZ = new BinaryExpression(
+				Untyped.INSTANCE,
+				x,
+				z,
+				ComparisonLe.INSTANCE,
+				SyntheticLocation.INSTANCE);
+
+		first = first.assume(xLeY, null, null, null).assume(yLeZ, null, null, null);
+		TwoVariableLinearInequality second = new TwoVariableLinearInequality().assume(xLeZ, null, null, null);
+
+		assertTrue(first.lessOrEqual(second));
+	}
+
+	@Test
 	public void testTvpiAnalysis() throws ParsingException, AnalysisException {
 		Program program = IMPFrontend.processFile("inputs/tvpi.imp");
 		LiSAConfiguration conf = new DefaultConfiguration();

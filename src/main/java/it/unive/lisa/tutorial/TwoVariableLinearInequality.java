@@ -1,5 +1,6 @@
 package it.unive.lisa.tutorial;
 
+import it.unive.lisa.analysis.Lattice;
 import it.unive.lisa.analysis.ScopeToken;
 import it.unive.lisa.analysis.SemanticException;
 import it.unive.lisa.analysis.SemanticOracle;
@@ -20,13 +21,18 @@ import it.unive.lisa.symbolic.value.operator.binary.ComparisonGe;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonGt;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonLt;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonLe;
+import it.unive.lisa.util.representation.MapRepresentation;
 import it.unive.lisa.util.representation.StringRepresentation;
 import it.unive.lisa.util.representation.StructuredRepresentation;
 
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -68,19 +74,50 @@ public class TwoVariableLinearInequality
 	}
 
 	@Override
+	public boolean lessOrEqualAux(
+			TwoVariableLinearInequality other)
+			throws SemanticException {
+		if (isBottom())
+			return true;
+		if (other.isTop())
+			return true;
+		if (isTop())
+			return other.isTop();
+		if (other.isBottom())
+			return isBottom();
+
+		Set<Constraint> thisClosed = closedConstraints();
+		for (Constraint target : other.closedConstraints()) {
+			boolean found = false;
+			for (Constraint mine : thisClosed)
+				if (mine.entails(target)) {
+					found = true;
+					break;
+				}
+
+			if (!found)
+				return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public TwoVariableLinearInequality assign(
 			Identifier id,
 			ValueExpression expression,
 			ProgramPoint pp,
 			SemanticOracle oracle)
 			throws SemanticException {
-		if (isBottom())
+		if (isBottom() || isSpecialIdentifier(id))
 			return this;
 
 		TwoVariableLinearInequality cleaned = cleanupIdentifier(id);
 		AffineForm form = asAffineForm(expression);
-		if (form != null && form.variable != null)
+		if (form != null && form.variable != null && !isSpecialIdentifier(form.variable))
 			return cleaned.addEqualityConstraint(id, 1, form.variable, form.coefficient, form.offset);
+		if (form != null && form.variable == null)
+			return cleaned.addConstantEquality(id, form.offset);
 
 		return cleaned;
 	}
@@ -108,7 +145,7 @@ public class TwoVariableLinearInequality
 			BinaryExpression binary = (BinaryExpression) expression;
 			AffineForm left = asAffineForm(binary.getLeft());
 			AffineForm right = asAffineForm(binary.getRight());
-			if (left != null && right != null)
+			if (left != null && right != null && !mentionsSpecialIdentifier(left, right))
 				return assumeNormalizedComparison(left, right, binary);
 		}
 
@@ -118,13 +155,16 @@ public class TwoVariableLinearInequality
 	@Override
 	public boolean knowsIdentifier(
 			Identifier id) {
-		return getKeys().contains(id);
+		return !isSpecialIdentifier(id) && getKeys().contains(id);
 	}
 
 	@Override
 	public TwoVariableLinearInequality forgetIdentifier(
 			Identifier id)
 			throws SemanticException {
+		if (isSpecialIdentifier(id))
+			return this;
+
 		return cleanupIdentifier(id);
 	}
 
@@ -139,7 +179,8 @@ public class TwoVariableLinearInequality
 		for (Map.Entry<Identifier, ConstraintSet> entry : function.entrySet()) {
 			Set<Constraint> filtered = new HashSet<>();
 			for (Constraint constraint : entry.getValue().elements)
-				if (!test.test(constraint.left) && !test.test(constraint.right))
+				if ((constraint.left == null || !test.test(constraint.left))
+						&& (constraint.right == null || !test.test(constraint.right)))
 					filtered.add(constraint);
 
 			if (test.test(entry.getKey()))
@@ -163,7 +204,7 @@ public class TwoVariableLinearInequality
 			BinaryExpression binary = (BinaryExpression) expression;
 			AffineForm left = asAffineForm(binary.getLeft());
 			AffineForm right = asAffineForm(binary.getRight());
-			if (left != null && right != null)
+			if (left != null && right != null && !mentionsSpecialIdentifier(left, right))
 				return satisfiesNormalizedComparison(left, right, binary);
 		}
 
@@ -189,7 +230,22 @@ public class TwoVariableLinearInequality
 
 	@Override
 	public StructuredRepresentation representation() {
-		return super.representation();
+		if (isTop())
+			return Lattice.topRepresentation();
+		if (isBottom())
+			return Lattice.bottomRepresentation();
+
+		TreeSet<Constraint> constraints = new TreeSet<>(Comparator.comparing(Constraint::toString));
+		constraints.addAll(closedConstraints());
+
+		Map<StructuredRepresentation, StructuredRepresentation> mapping = new HashMap<>();
+		mapping.put(new StringRepresentation("constraints"),
+				new StringRepresentation(constraints.toString()));
+
+		for (Identifier id : sortedIdentifiers())
+			mapping.put(new StringRepresentation(id), getState(id).representation());
+
+		return new MapRepresentation(mapping);
 	}
 
 	private TwoVariableLinearInequality addConstraint(
@@ -207,16 +263,20 @@ public class TwoVariableLinearInequality
 			int constant) {
 		if (isBottom())
 			return this;
-		if (left.equals(right) && leftCoeff + rightCoeff == 0)
-			return constant < 0 ? bottom() : this;
 
-		if (conflictsWithKnownConstraint(left, leftCoeff, right, rightCoeff, constant))
+		Constraint normalized = new Constraint(left, right, leftCoeff, rightCoeff, constant).normalize();
+		if (normalized.isTrivial())
+			return this;
+		if (normalized.isUnsatisfiable())
+			return bottom();
+		if (conflictsWithKnownConstraint(normalized))
 			return bottom();
 
-		Constraint constraint = new Constraint(left, right, leftCoeff, rightCoeff, constant);
-		ConstraintSet singleton = new ConstraintSet(Collections.singleton(constraint));
-		TwoVariableLinearInequality withLeft = putState(left, getState(left).glb(singleton));
-		return left.equals(right) ? withLeft : withLeft.putState(right, getState(right).glb(singleton));
+		ConstraintSet singleton = new ConstraintSet(Collections.singleton(normalized));
+		TwoVariableLinearInequality withLeft = putState(normalized.left, getState(normalized.left).glb(singleton));
+		if (normalized.right == null || normalized.left.equals(normalized.right))
+			return withLeft;
+		return withLeft.putState(normalized.right, getState(normalized.right).glb(singleton));
 	}
 
 	private TwoVariableLinearInequality addEqualityConstraint(
@@ -236,6 +296,13 @@ public class TwoVariableLinearInequality
 		return addEqualityConstraint(left, 1, right, 1, offset);
 	}
 
+	private TwoVariableLinearInequality addConstantEquality(
+			Identifier id,
+			int constant) {
+		return addConstraint(id, 1, null, 0, constant)
+				.addConstraint(id, -1, null, 0, -constant);
+	}
+
 	private Satisfiability satisfiesConstraint(
 			Identifier left,
 			Identifier right,
@@ -249,45 +316,22 @@ public class TwoVariableLinearInequality
 			Identifier right,
 			int rightCoeff,
 			int constant) {
-		if (left.equals(right) && leftCoeff + rightCoeff == 0)
-			return constant >= 0 ? Satisfiability.SATISFIED : Satisfiability.NOT_SATISFIED;
-
-		for (Constraint known : getState(left).elements) {
-			AlignedCoefficients aligned = align(known, left, right);
-			if (aligned == null)
-				continue;
-
-			if (aligned.leftCoeff == leftCoeff
-					&& aligned.rightCoeff == rightCoeff
-					&& known.constant <= constant)
-				return Satisfiability.SATISFIED;
-		}
-
-		if (conflictsWithKnownConstraint(left, leftCoeff, right, rightCoeff, constant))
+		Constraint target = new Constraint(left, right, leftCoeff, rightCoeff, constant).normalize();
+		if (target.isTrivial())
+			return Satisfiability.SATISFIED;
+		if (target.isUnsatisfiable())
+			return Satisfiability.NOT_SATISFIED;
+		if (containsEntailingConstraint(target))
+			return Satisfiability.SATISFIED;
+		if (containsEntailingConstraint(target.negate()))
 			return Satisfiability.NOT_SATISFIED;
 
 		return Satisfiability.UNKNOWN;
 	}
 
 	private boolean conflictsWithKnownConstraint(
-			Identifier left,
-			int leftCoeff,
-			Identifier right,
-			int rightCoeff,
-			int constant) {
-		if (left.equals(right) && leftCoeff + rightCoeff == 0)
-			return constant < 0;
-
-		for (Constraint known : getState(left).elements) {
-			AlignedCoefficients aligned = align(known, left, right);
-			if (aligned != null
-					&& aligned.leftCoeff == -leftCoeff
-					&& aligned.rightCoeff == -rightCoeff
-					&& constant + known.constant < 0)
-				return true;
-		}
-
-		return false;
+			Constraint candidate) {
+		return containsEntailingConstraint(candidate.negate());
 	}
 
 	private TwoVariableLinearInequality cleanupIdentifier(
@@ -420,10 +464,10 @@ public class TwoVariableLinearInequality
 					right.offset - left.offset);
 
 		if (left.variable != null)
-			return new NormalizedConstraint(left.variable, left.coefficient, left.variable, 0,
+			return new NormalizedConstraint(left.variable, left.coefficient, null, 0,
 					right.offset - left.offset);
 
-		return new NormalizedConstraint(right.variable, 0, right.variable, -right.coefficient,
+		return new NormalizedConstraint(right.variable, -right.coefficient, null, 0,
 				right.offset - left.offset);
 	}
 
@@ -468,6 +512,47 @@ public class TwoVariableLinearInequality
 		return value instanceof Integer ? (Integer) value : null;
 	}
 
+	private Set<Constraint> allConstraints() {
+		Set<Constraint> constraints = new HashSet<>();
+		if (function == null)
+			return constraints;
+
+		for (ConstraintSet state : function.values())
+			constraints.addAll(state.elements);
+
+		return constraints;
+	}
+
+	private Set<Constraint> closedConstraints() {
+		return computeClosure(allConstraints());
+	}
+
+	private Set<Identifier> sortedIdentifiers() {
+		TreeSet<Identifier> sorted = new TreeSet<>((left, right) -> {
+			int cmp = left.toString().compareTo(right.toString());
+			if (cmp != 0)
+				return cmp;
+			return left.getClass().getName().compareTo(right.getClass().getName());
+		});
+		sorted.addAll(getKeys());
+		return sorted;
+	}
+
+	private boolean mentionsSpecialIdentifier(
+			AffineForm left,
+			AffineForm right) {
+		return left.variable != null && isSpecialIdentifier(left.variable)
+				|| right.variable != null && isSpecialIdentifier(right.variable);
+	}
+
+	private boolean isSpecialIdentifier(
+			Identifier id) {
+		String name = id.getName();
+		return name.contains("heap")
+				|| name.contains("this")
+				|| name.startsWith("&pp@");
+	}
+
 	private TwoVariableLinearInequality remapIdentifiers(
 			IdentifierMapper mapper)
 			throws SemanticException {
@@ -492,8 +577,8 @@ public class TwoVariableLinearInequality
 		Set<Constraint> remapped = new HashSet<>();
 		for (Constraint constraint : state.elements)
 			remapped.add(new Constraint(
-					mapper.apply(constraint.left),
-					mapper.apply(constraint.right),
+					constraint.left == null ? null : mapper.apply(constraint.left),
+					constraint.right == null ? null : mapper.apply(constraint.right),
 					constraint.leftCoeff,
 					constraint.rightCoeff,
 					constraint.constant));
@@ -547,28 +632,149 @@ public class TwoVariableLinearInequality
 		}
 	}
 
-	private static final class AlignedCoefficients {
+	private boolean containsEntailingConstraint(
+			Constraint target) {
+		for (Constraint known : closedConstraints())
+			if (known.entails(target))
+				return true;
+		return false;
+	}
 
-		private final int leftCoeff;
-		private final int rightCoeff;
+	private Set<Constraint> computeClosure(
+			Set<Constraint> constraints) {
+		Set<Constraint> current = sanitizeConstraints(constraints);
+		while (true) {
+			if (containsUnsatisfiableConstraint(current))
+				return current;
 
-		private AlignedCoefficients(
-				int leftCoeff,
-				int rightCoeff) {
-			this.leftCoeff = leftCoeff;
-			this.rightCoeff = rightCoeff;
+			Set<Constraint> next = new HashSet<>(current);
+			next.addAll(deriveConsequences(current));
+			next = sanitizeConstraints(next);
+
+			if (next.equals(current))
+				return next;
+			current = next;
 		}
 	}
 
-	private AlignedCoefficients align(
-			Constraint constraint,
-			Identifier left,
-			Identifier right) {
-		if (constraint.left.equals(left) && constraint.right.equals(right))
-			return new AlignedCoefficients(constraint.leftCoeff, constraint.rightCoeff);
-		if (constraint.left.equals(right) && constraint.right.equals(left))
-			return new AlignedCoefficients(constraint.rightCoeff, constraint.leftCoeff);
-		return null;
+	private Set<Constraint> deriveConsequences(
+			Set<Constraint> constraints) {
+		Set<Constraint> generated = new HashSet<>();
+		for (Constraint first : constraints)
+			for (Constraint second : constraints) {
+				if (first.equals(second))
+					continue;
+
+				Set<Identifier> common = new HashSet<>(first.variables());
+				common.retainAll(second.variables());
+				for (Identifier pivot : common) {
+					Constraint derived = eliminateSharedVariable(first, second, pivot);
+					if (derived != null)
+						generated.add(derived.normalize());
+				}
+			}
+
+		return sanitizeConstraints(generated);
+	}
+
+	private Constraint eliminateSharedVariable(
+			Constraint first,
+			Constraint second,
+			Identifier pivot) {
+		int firstPivotCoeff = first.coefficientOf(pivot);
+		int secondPivotCoeff = second.coefficientOf(pivot);
+		if (firstPivotCoeff == 0 || secondPivotCoeff == 0 || firstPivotCoeff * secondPivotCoeff >= 0)
+			return null;
+
+		int firstScale = Math.abs(secondPivotCoeff);
+		int secondScale = Math.abs(firstPivotCoeff);
+		int constant = firstScale * first.constant + secondScale * second.constant;
+
+		Map<Identifier, Integer> coefficients = new HashMap<>();
+		accumulateCoefficient(coefficients, first.left, firstScale * first.leftCoeff, pivot);
+		accumulateCoefficient(coefficients, first.right, firstScale * first.rightCoeff, pivot);
+		accumulateCoefficient(coefficients, second.left, secondScale * second.leftCoeff, pivot);
+		accumulateCoefficient(coefficients, second.right, secondScale * second.rightCoeff, pivot);
+		coefficients.entrySet().removeIf(entry -> entry.getValue() == 0);
+
+		Iterator<Map.Entry<Identifier, Integer>> iterator = coefficients.entrySet().iterator();
+		Identifier left = null;
+		Identifier right = null;
+		int leftCoeff = 0;
+		int rightCoeff = 0;
+
+		if (iterator.hasNext()) {
+			Map.Entry<Identifier, Integer> entry = iterator.next();
+			left = entry.getKey();
+			leftCoeff = entry.getValue();
+		}
+
+		if (iterator.hasNext()) {
+			Map.Entry<Identifier, Integer> entry = iterator.next();
+			right = entry.getKey();
+			rightCoeff = entry.getValue();
+		}
+
+		return new Constraint(left, right, leftCoeff, rightCoeff, constant).normalize();
+	}
+
+	private void accumulateCoefficient(
+			Map<Identifier, Integer> coefficients,
+			Identifier id,
+			int value,
+			Identifier pivot) {
+		if (id == null || value == 0 || id.equals(pivot))
+			return;
+		coefficients.merge(id, value, Integer::sum);
+	}
+
+	private Set<Constraint> sanitizeConstraints(
+			Set<Constraint> constraints) {
+		if (constraints.isEmpty())
+			return constraints;
+
+		Set<Constraint> cleaned = removeTrivialConstraints(constraints);
+		if (containsUnsatisfiableConstraint(cleaned))
+			return Collections.singleton(new Constraint(null, null, 0, 0, -1));
+		return tightenConstraints(cleaned);
+	}
+
+	private Set<Constraint> removeTrivialConstraints(
+			Set<Constraint> constraints) {
+		Set<Constraint> cleaned = new HashSet<>();
+		for (Constraint constraint : constraints)
+			if (!constraint.isTrivial())
+				cleaned.add(constraint);
+		return cleaned;
+	}
+
+	private Set<Constraint> tightenConstraints(
+			Set<Constraint> constraints) {
+		Set<Constraint> tightened = new HashSet<>();
+		for (Constraint current : constraints) {
+			boolean shouldAdd = true;
+			Set<Constraint> toRemove = new HashSet<>();
+			for (Constraint existing : tightened)
+				if (current.sameLeftPart(existing)) {
+					if (current.constant <= existing.constant)
+						toRemove.add(existing);
+					else
+						shouldAdd = false;
+				}
+
+			tightened.removeAll(toRemove);
+			if (shouldAdd)
+				tightened.add(current);
+		}
+		return tightened;
+	}
+
+	private boolean containsUnsatisfiableConstraint(
+			Set<Constraint> constraints) {
+		for (Constraint constraint : constraints)
+			if (constraint.isUnsatisfiable())
+				return true;
+		return false;
 	}
 
 	public static class Constraint {
@@ -594,7 +800,99 @@ public class TwoVariableLinearInequality
 
 		public boolean mentions(
 				Identifier id) {
-			return left.equals(id) || right.equals(id);
+			return left != null && left.equals(id) || right != null && right.equals(id);
+		}
+
+		public boolean isTrivial() {
+			return leftCoeff == 0 && rightCoeff == 0 && constant >= 0;
+		}
+
+		public boolean isUnsatisfiable() {
+			return leftCoeff == 0 && rightCoeff == 0 && constant < 0;
+		}
+
+		public boolean sameLeftPart(
+				Constraint other) {
+			return leftCoeff == other.leftCoeff
+					&& rightCoeff == other.rightCoeff
+					&& Objects.equals(left, other.left)
+					&& Objects.equals(right, other.right);
+		}
+
+		public boolean entails(
+				Constraint other) {
+			return sameLeftPart(other) && constant <= other.constant;
+		}
+
+		public Set<Identifier> variables() {
+			Set<Identifier> variables = new HashSet<>();
+			if (left != null && leftCoeff != 0)
+				variables.add(left);
+			if (right != null && rightCoeff != 0)
+				variables.add(right);
+			return variables;
+		}
+
+		public int coefficientOf(
+				Identifier id) {
+			int coefficient = 0;
+			if (left != null && left.equals(id))
+				coefficient += leftCoeff;
+			if (right != null && right.equals(id))
+				coefficient += rightCoeff;
+			return coefficient;
+		}
+
+		public Constraint normalize() {
+			Map<Identifier, Integer> coefficients = new TreeMap<>(Comparator.comparing(Identifier::getName));
+			if (left != null && leftCoeff != 0)
+				coefficients.merge(left, leftCoeff, Integer::sum);
+			if (right != null && rightCoeff != 0)
+				coefficients.merge(right, rightCoeff, Integer::sum);
+			coefficients.entrySet().removeIf(entry -> entry.getValue() == 0);
+
+			Iterator<Map.Entry<Identifier, Integer>> iterator = coefficients.entrySet().iterator();
+			Identifier normalizedLeft = null;
+			Identifier normalizedRight = null;
+			int normalizedLeftCoeff = 0;
+			int normalizedRightCoeff = 0;
+			if (iterator.hasNext()) {
+				Map.Entry<Identifier, Integer> entry = iterator.next();
+				normalizedLeft = entry.getKey();
+				normalizedLeftCoeff = entry.getValue();
+			}
+			if (iterator.hasNext()) {
+				Map.Entry<Identifier, Integer> entry = iterator.next();
+				normalizedRight = entry.getKey();
+				normalizedRightCoeff = entry.getValue();
+			}
+
+			int divisor = gcd(gcd(normalizedLeftCoeff, normalizedRightCoeff), constant);
+			if (divisor != 0) {
+				normalizedLeftCoeff /= divisor;
+				normalizedRightCoeff /= divisor;
+			}
+			int normalizedConstant = divisor == 0 ? constant : constant / divisor;
+
+			return new Constraint(normalizedLeft, normalizedRight, normalizedLeftCoeff, normalizedRightCoeff,
+					normalizedConstant);
+		}
+
+		public Constraint negate() {
+			return new Constraint(left, right, -leftCoeff, -rightCoeff, -constant - 1).normalize();
+		}
+
+		private int gcd(
+				int left,
+				int right) {
+			left = Math.abs(left);
+			right = Math.abs(right);
+			while (right != 0) {
+				int tmp = left % right;
+				left = right;
+				right = tmp;
+			}
+			return left == 0 ? 1 : left;
 		}
 
 		@Override
@@ -619,7 +917,23 @@ public class TwoVariableLinearInequality
 
 		@Override
 		public String toString() {
-			return leftCoeff + "*" + left + " + " + rightCoeff + "*" + right + " <= " + constant;
+			StringBuilder builder = new StringBuilder();
+			boolean written = false;
+			if (left != null && leftCoeff != 0) {
+				builder.append(leftCoeff).append("*").append(left);
+				written = true;
+			}
+			if (right != null && rightCoeff != 0) {
+				if (written && rightCoeff > 0)
+					builder.append(" + ");
+				else if (written)
+					builder.append(" ");
+				builder.append(rightCoeff).append("*").append(right);
+				written = true;
+			}
+			if (!written)
+				builder.append("0");
+			return builder.append(" <= ").append(constant).toString();
 		}
 	}
 
